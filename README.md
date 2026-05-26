@@ -6,6 +6,14 @@ The project simulates store, employee, order, return, and manager action data; c
 
 ![Home screen](assets/home-screen.png)
 
+## Live Demo
+
+After GitHub Pages is enabled, the dashboard will be available at:
+
+```text
+https://urvilgodhani.github.io/data_projects/
+```
+
 ## Business Problem
 
 Market Managers need a fast way to understand whether digital fulfillment is running smoothly across many stores.
