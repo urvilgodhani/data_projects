@@ -1,0 +1,2 @@
+total_orders,total_items,sla_percent,avg_pick_rate,avg_staging_minutes,avg_customer_wait_minutes,avg_fulfillment_minutes,substitution_percent,avg_customer_rating,top_store,bottom_store
+12000,207522,89.38,39.29,8.72,6.24,72.62,8.92,4.51,1042,1004

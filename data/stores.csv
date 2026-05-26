@@ -1,0 +1,51 @@
+store_id,store_number,city,state,market,sla_target_minutes,daily_order_capacity,performance_bias
+store_001,1001,Memphis,TN,South Central Digital,90,186,1.087
+store_002,1002,San Antonio,TX,South Central Digital,90,215,1.085
+store_003,1003,Memphis,TN,South Central Digital,120,408,1.016
+store_004,1004,Little Rock,AR,South Central Digital,105,188,0.831
+store_005,1005,San Antonio,TX,South Central Digital,90,309,1.037
+store_006,1006,St. Louis,MO,South Central Digital,90,363,1.054
+store_007,1007,St. Louis,MO,South Central Digital,105,236,0.982
+store_008,1008,Fort Worth,TX,South Central Digital,90,374,1.11
+store_009,1009,Nashville,TN,South Central Digital,105,267,0.92
+store_010,1010,San Antonio,TX,South Central Digital,105,206,0.853
+store_011,1011,Dallas,TX,South Central Digital,105,396,0.944
+store_012,1012,Fort Worth,TX,South Central Digital,90,366,0.985
+store_013,1013,Dallas,TX,South Central Digital,105,200,1.019
+store_014,1014,New Orleans,LA,South Central Digital,120,338,1.139
+store_015,1015,Oklahoma City,OK,South Central Digital,120,229,1.074
+store_016,1016,Austin,TX,South Central Digital,120,238,1.098
+store_017,1017,Dallas,TX,South Central Digital,90,401,0.856
+store_018,1018,Fort Worth,TX,South Central Digital,105,342,1.12
+store_019,1019,Houston,TX,South Central Digital,105,270,0.895
+store_020,1020,Fort Worth,TX,South Central Digital,120,419,1.066
+store_021,1021,Dallas,TX,South Central Digital,120,342,0.882
+store_022,1022,Nashville,TN,South Central Digital,90,221,0.986
+store_023,1023,Fort Worth,TX,South Central Digital,120,356,1.021
+store_024,1024,Memphis,TN,South Central Digital,105,395,1.097
+store_025,1025,Austin,TX,South Central Digital,90,390,0.832
+store_026,1026,Oklahoma City,OK,South Central Digital,105,248,0.844
+store_027,1027,Jackson,MS,South Central Digital,120,404,1.078
+store_028,1028,San Antonio,TX,South Central Digital,120,307,0.962
+store_029,1029,Jackson,MS,South Central Digital,120,297,0.871
+store_030,1030,Houston,TX,South Central Digital,90,370,1.022
+store_031,1031,Fort Worth,TX,South Central Digital,120,329,0.974
+store_032,1032,Little Rock,AR,South Central Digital,105,272,0.899
+store_033,1033,Houston,TX,South Central Digital,120,306,0.853
+store_034,1034,Austin,TX,South Central Digital,90,219,1.046
+store_035,1035,Baton Rouge,LA,South Central Digital,120,288,1.035
+store_036,1036,Tulsa,OK,South Central Digital,105,332,1.179
+store_037,1037,St. Louis,MO,South Central Digital,105,321,1.13
+store_038,1038,Austin,TX,South Central Digital,120,364,0.861
+store_039,1039,Jackson,MS,South Central Digital,120,372,0.916
+store_040,1040,Memphis,TN,South Central Digital,105,208,0.926
+store_041,1041,Houston,TX,South Central Digital,105,180,1.163
+store_042,1042,Jackson,MS,South Central Digital,120,247,1.17
+store_043,1043,Baton Rouge,LA,South Central Digital,90,309,1.149
+store_044,1044,New Orleans,LA,South Central Digital,120,256,1.123
+store_045,1045,St. Louis,MO,South Central Digital,120,230,0.875
+store_046,1046,Baton Rouge,LA,South Central Digital,90,318,1.163
+store_047,1047,Jackson,MS,South Central Digital,120,415,0.82
+store_048,1048,Oklahoma City,OK,South Central Digital,105,184,0.86
+store_049,1049,Oklahoma City,OK,South Central Digital,105,241,0.841
+store_050,1050,Jackson,MS,South Central Digital,120,200,0.851

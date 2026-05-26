@@ -1,0 +1,5 @@
+override_id,created_at,manager_id,scope,store_id,action,reason,metric_edit_allowed,status
+ovr_000001,2026-05-26T10:00,market_mgr_001,picking,store_004,Reassign labor,Move two associates from staging to picking for evening rush,false,logged
+ovr_000002,2026-05-26T10:15,market_mgr_001,dispensing,store_023,Prioritize queue,Prioritize customers waiting over 15 minutes,false,logged
+ovr_000003,2026-05-26T10:30,market_mgr_001,returns,store_008,Approve exception,Approve refund review for late delivery complaint,false,logged
+

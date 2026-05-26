@@ -1,0 +1,51 @@
+store_id,store_number,city,worst_stage,severity,bottleneck_score,recommended_action
+store_004,1004,Little Rock,staging,medium,54.9,"Audit staging layout, label quality, and handoff timing."
+store_047,1047,Jackson,staging,medium,53.8,"Audit staging layout, label quality, and handoff timing."
+store_045,1045,St. Louis,staging,medium,53.35,"Audit staging layout, label quality, and handoff timing."
+store_049,1049,Oklahoma City,staging,medium,52.6,"Audit staging layout, label quality, and handoff timing."
+store_010,1010,San Antonio,staging,medium,52.6,"Audit staging layout, label quality, and handoff timing."
+store_033,1033,Houston,staging,medium,51.6,"Audit staging layout, label quality, and handoff timing."
+store_038,1038,Austin,staging,medium,51.15,"Audit staging layout, label quality, and handoff timing."
+store_048,1048,Oklahoma City,staging,medium,50.7,"Audit staging layout, label quality, and handoff timing."
+store_050,1050,Jackson,staging,medium,50.4,"Audit staging layout, label quality, and handoff timing."
+store_009,1009,Nashville,picking,medium,50.16,"Add picker coverage, review aisle routing, and coach low pick-rate associates."
+store_029,1029,Jackson,staging,medium,50.05,"Audit staging layout, label quality, and handoff timing."
+store_026,1026,Oklahoma City,picking,medium,49.87,"Add picker coverage, review aisle routing, and coach low pick-rate associates."
+store_025,1025,Austin,staging,medium,49.35,"Audit staging layout, label quality, and handoff timing."
+store_017,1017,Dallas,staging,medium,48.4,"Audit staging layout, label quality, and handoff timing."
+store_032,1032,Little Rock,picking,medium,48.0,"Add picker coverage, review aisle routing, and coach low pick-rate associates."
+store_019,1019,Houston,staging,medium,47.8,"Audit staging layout, label quality, and handoff timing."
+store_021,1021,Dallas,staging,medium,47.5,"Audit staging layout, label quality, and handoff timing."
+store_011,1011,Dallas,staging,medium,47.1,"Audit staging layout, label quality, and handoff timing."
+store_040,1040,Memphis,picking,medium,46.96,"Add picker coverage, review aisle routing, and coach low pick-rate associates."
+store_028,1028,San Antonio,staging,medium,46.9,"Audit staging layout, label quality, and handoff timing."
+store_039,1039,Jackson,picking,medium,46.19,"Add picker coverage, review aisle routing, and coach low pick-rate associates."
+store_031,1031,Fort Worth,staging,low,44.75,Monitor performance; no immediate action needed.
+store_022,1022,Nashville,picking,low,44.33,Monitor performance; no immediate action needed.
+store_007,1007,St. Louis,picking,low,43.91,Monitor performance; no immediate action needed.
+store_012,1012,Fort Worth,staging,low,43.85,Monitor performance; no immediate action needed.
+store_027,1027,Jackson,picking,low,43.7,Monitor performance; no immediate action needed.
+store_030,1030,Houston,picking,low,43.59,Monitor performance; no immediate action needed.
+store_003,1003,Memphis,picking,low,43.19,Monitor performance; no immediate action needed.
+store_013,1013,Dallas,picking,low,42.43,Monitor performance; no immediate action needed.
+store_037,1037,St. Louis,picking,low,42.27,Monitor performance; no immediate action needed.
+store_020,1020,Fort Worth,picking,low,42.11,Monitor performance; no immediate action needed.
+store_016,1016,Austin,picking,low,42.04,Monitor performance; no immediate action needed.
+store_024,1024,Memphis,picking,low,41.67,Monitor performance; no immediate action needed.
+store_023,1023,Fort Worth,staging,low,41.4,Monitor performance; no immediate action needed.
+store_005,1005,San Antonio,picking,low,41.21,Monitor performance; no immediate action needed.
+store_043,1043,Baton Rouge,picking,low,40.99,Monitor performance; no immediate action needed.
+store_015,1015,Oklahoma City,staging,low,40.65,Monitor performance; no immediate action needed.
+store_034,1034,Austin,staging,low,40.5,Monitor performance; no immediate action needed.
+store_035,1035,Baton Rouge,picking,low,40.43,Monitor performance; no immediate action needed.
+store_006,1006,St. Louis,staging,low,40.35,Monitor performance; no immediate action needed.
+store_008,1008,Fort Worth,picking,low,39.9,Monitor performance; no immediate action needed.
+store_018,1018,Fort Worth,staging,low,39.4,Monitor performance; no immediate action needed.
+store_014,1014,New Orleans,picking,low,39.21,Monitor performance; no immediate action needed.
+store_001,1001,Memphis,picking,low,39.1,Monitor performance; no immediate action needed.
+store_002,1002,San Antonio,staging,low,39.1,Monitor performance; no immediate action needed.
+store_044,1044,New Orleans,picking,low,39.04,Monitor performance; no immediate action needed.
+store_046,1046,Baton Rouge,picking,low,37.1,Monitor performance; no immediate action needed.
+store_041,1041,Houston,picking,low,37.0,Monitor performance; no immediate action needed.
+store_042,1042,Jackson,staging,low,36.65,Monitor performance; no immediate action needed.
+store_036,1036,Tulsa,staging,low,35.35,Monitor performance; no immediate action needed.

@@ -1,0 +1,1202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Digital Fulfillment Command Center</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18212c;
+        --muted: #657180;
+        --line: #d7dee7;
+        --page: #f4f7fa;
+        --panel: #ffffff;
+        --navy: #102942;
+        --blue: #1769aa;
+        --teal: #1f8a84;
+        --green: #1f8f63;
+        --amber: #c97812;
+        --red: #c83a3a;
+        --violet: #7654a6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      header {
+        background: var(--navy);
+        color: white;
+        padding: 18px 26px;
+      }
+
+      .header-row {
+        align-items: center;
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+      }
+
+      h1 {
+        font-size: 25px;
+        letter-spacing: 0;
+        margin: 0;
+      }
+
+      header p {
+        color: #c9d8e7;
+        margin: 5px 0 0;
+      }
+
+      .back {
+        background: #ffffff;
+        border: 0;
+        border-radius: 6px;
+        color: var(--navy);
+        cursor: pointer;
+        display: none;
+        font-weight: 700;
+        padding: 9px 12px;
+      }
+
+      .app {
+        margin: 22px auto 40px;
+        width: min(1420px, calc(100% - 32px));
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      .home-grid {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+      }
+
+      .tile {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        cursor: pointer;
+        min-height: 230px;
+        padding: 22px;
+        text-align: left;
+        transition: transform 140ms ease, box-shadow 140ms ease;
+      }
+
+      .tile:hover {
+        box-shadow: 0 14px 30px rgba(16, 41, 66, 0.12);
+        transform: translateY(-2px);
+      }
+
+      .tile h2 {
+        font-size: 26px;
+        margin: 0 0 18px;
+      }
+
+      .tile-icon {
+        display: block;
+        font-size: 34px;
+        margin-bottom: 6px;
+      }
+
+      .tile-metric {
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 700;
+        margin: 8px 0;
+      }
+
+      .tile-sub {
+        color: var(--muted);
+        margin: 0 0 16px;
+      }
+
+      .tile-alert {
+        color: var(--amber);
+        font-weight: 700;
+        margin-top: 12px;
+      }
+
+      .tile-link {
+        color: var(--blue);
+        display: inline-block;
+        font-weight: 700;
+        margin-top: 18px;
+      }
+
+      .wide-tile {
+        grid-column: span 2;
+      }
+
+      .page-title {
+        align-items: end;
+        display: flex;
+        gap: 18px;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .page-title h2 {
+        font-size: 25px;
+        margin: 0;
+      }
+
+      .page-title p {
+        color: var(--muted);
+        margin: 5px 0 0;
+      }
+
+      .layout {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: minmax(0, 1fr) 320px;
+      }
+
+      .content-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .kpis {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(5, minmax(130px, 1fr));
+      }
+
+      .section-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      .card h3 {
+        font-size: 17px;
+        margin: 0 0 13px;
+      }
+
+      .mini-grid {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+      }
+
+      .metric-label {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .metric-value {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .metric-note {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 4px;
+      }
+
+      .bar-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .bar-row {
+        align-items: center;
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 118px 1fr 62px;
+      }
+
+      .bar-track {
+        background: #e6ebf0;
+        border-radius: 999px;
+        height: 12px;
+        overflow: hidden;
+      }
+
+      .bar-fill {
+        background: var(--blue);
+        height: 100%;
+      }
+
+      .bar-fill.green {
+        background: var(--green);
+      }
+
+      .bar-fill.amber {
+        background: var(--amber);
+      }
+
+      .bar-fill.red {
+        background: var(--red);
+      }
+
+      .chart {
+        min-height: 220px;
+      }
+
+      .chart svg {
+        height: 210px;
+        width: 100%;
+      }
+
+      table {
+        border-collapse: collapse;
+        font-size: 13px;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 9px 7px;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+      }
+
+      .sidebar {
+        display: grid;
+        gap: 12px;
+      }
+
+      .alert {
+        border-left: 5px solid var(--amber);
+        background: var(--panel);
+        border-radius: 8px;
+        padding: 12px;
+      }
+
+      .alert.red {
+        border-left-color: var(--red);
+      }
+
+      .alert.green {
+        border-left-color: var(--green);
+      }
+
+      .alert-title {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+
+      .alert p {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.35;
+        margin: 0;
+      }
+
+      .feature-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .feature {
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr auto;
+        padding: 10px;
+      }
+
+      .feature strong {
+        display: block;
+      }
+
+      .feature span {
+        color: var(--muted);
+        display: block;
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .badge {
+        background: #e8f1f8;
+        border-radius: 999px;
+        color: var(--blue);
+        font-size: 12px;
+        font-weight: 700;
+        padding: 5px 8px;
+      }
+
+      .selector {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+      }
+
+      .selector input,
+      .selector select {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 9px 10px;
+      }
+
+      .store-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+        margin-bottom: 16px;
+      }
+
+      .store-button {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 13px;
+        text-align: left;
+      }
+
+      .store-button.active,
+      .store-button:hover {
+        border-color: var(--blue);
+        box-shadow: inset 0 0 0 1px var(--blue);
+      }
+
+      .store-button strong {
+        display: block;
+        font-size: 16px;
+      }
+
+      .store-button span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .store-dashboard {
+        display: none;
+      }
+
+      .store-dashboard.active {
+        display: block;
+      }
+
+      .word-cloud {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        min-height: 110px;
+      }
+
+      .word-cloud span {
+        color: var(--blue);
+        font-weight: 700;
+      }
+
+      .word-cloud span:nth-child(2n) {
+        color: var(--teal);
+        font-size: 22px;
+      }
+
+      .word-cloud span:nth-child(3n) {
+        color: var(--violet);
+        font-size: 18px;
+      }
+
+      .note {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .override-panel {
+        border-top: 4px solid var(--navy);
+      }
+
+      .override-controls {
+        display: grid;
+        gap: 10px;
+      }
+
+      .override-controls select,
+      .override-controls input {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 9px 10px;
+        width: 100%;
+      }
+
+      .override-controls button {
+        background: var(--navy);
+        border: 0;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        font-weight: 700;
+        padding: 10px 12px;
+      }
+
+      .override-log {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .override-entry {
+        background: #f4f7fa;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 12px;
+        padding: 9px;
+      }
+
+      @media (max-width: 1100px) {
+        .home-grid,
+        .layout,
+        .section-grid,
+        .kpis {
+          grid-template-columns: 1fr;
+        }
+
+        .wide-tile {
+          grid-column: span 1;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .header-row,
+        .page-title,
+        .selector {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        table {
+          display: block;
+          overflow-x: auto;
+        }
+
+        .mini-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-row">
+        <div>
+          <h1>Digital Fulfillment Command Center</h1>
+          <p>Market Manager Dashboard</p>
+        </div>
+        <button class="back" id="back-home" type="button">← Home</button>
+      </div>
+    </header>
+
+    <main class="app">
+      <section class="page active" id="home-page">
+        <div class="home-grid" id="home-tiles"></div>
+      </section>
+
+      <section class="page" id="picking-page"></section>
+      <section class="page" id="staging-page"></section>
+      <section class="page" id="dispensing-page"></section>
+      <section class="page" id="returns-page"></section>
+      <section class="page" id="store-page"></section>
+    </main>
+
+    <script>
+      const dataPath = "../data/";
+      const state = {
+        stores: [],
+        employees: [],
+        orders: [],
+        rankings: [],
+        scorecards: [],
+        bottlenecks: [],
+        returns: [],
+        summary: {},
+        selectedStoreId: "",
+      };
+
+      const pageMeta = {
+        picking: {
+          title: "📦 Picking Command Page",
+          subtitle: "Picker productivity, queue health, item accuracy, fatigue, and pick path performance.",
+          color: "blue",
+        },
+        staging: {
+          title: "📍 Staging Command Page",
+          subtitle: "Capacity, zone balance, cold chain compliance, retrieval speed, and staging bottlenecks.",
+          color: "teal",
+        },
+        dispensing: {
+          title: "🚗 Dispensing Command Page",
+          subtitle: "Customer wait, curbside flow, ratings, arrivals, no-shows, and SLA warnings.",
+          color: "green",
+        },
+        returns: {
+          title: "🔄 Returns & Exceptions Command Page",
+          subtitle: "Returns, cancellations, failed deliveries, complaints, refunds, and risk alerts.",
+          color: "violet",
+        },
+      };
+
+      function parseCsv(text) {
+        const [headerLine, ...lines] = text.trim().split(/\r?\n/);
+        const headers = headerLine.split(",");
+        return lines.filter(Boolean).map((line) => {
+          const values = line.split(",");
+          return Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""]));
+        });
+      }
+
+      async function loadCsv(name) {
+        const response = await fetch(dataPath + name);
+        if (!response.ok) throw new Error(`Unable to load ${name}`);
+        return parseCsv(await response.text());
+      }
+
+      function number(value, fallback = 0) {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : fallback;
+      }
+
+      function avg(rows, field) {
+        if (!rows.length) return 0;
+        return rows.reduce((sum, row) => sum + number(row[field]), 0) / rows.length;
+      }
+
+      function pct(value) {
+        return `${number(value).toFixed(1)}%`;
+      }
+
+      function minutes(value) {
+        return `${number(value).toFixed(1)} min`;
+      }
+
+      function formatNumber(value) {
+        return Math.round(number(value)).toLocaleString();
+      }
+
+      function groupBy(rows, key) {
+        return rows.reduce((groups, row) => {
+          const groupKey = typeof key === "function" ? key(row) : row[key];
+          groups[groupKey] = groups[groupKey] || [];
+          groups[groupKey].push(row);
+          return groups;
+        }, {});
+      }
+
+      function topRows(rows, count, field, direction = "desc") {
+        return [...rows].sort((a, b) => {
+          const delta = number(a[field]) - number(b[field]);
+          return direction === "desc" ? -delta : delta;
+        }).slice(0, count);
+      }
+
+      function showPage(name) {
+        document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
+        document.getElementById(`${name}-page`).classList.add("active");
+        document.getElementById("back-home").style.display = name === "home" ? "none" : "inline-block";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function metric(label, value, note = "") {
+        return `
+          <div class="metric">
+            <div class="metric-label">${label}</div>
+            <div class="metric-value">${value}</div>
+            ${note ? `<div class="metric-note">${note}</div>` : ""}
+          </div>
+        `;
+      }
+
+      function table(headers, rows) {
+        return `
+          <table>
+            <thead><tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr></thead>
+            <tbody>${rows.join("")}</tbody>
+          </table>
+        `;
+      }
+
+      function barList(rows, labelField, valueField, maxValue, className = "") {
+        return `
+          <div class="bar-list">
+            ${rows.map((row) => {
+              const width = Math.max(4, Math.min(100, number(row[valueField]) / maxValue * 100));
+              return `
+                <div class="bar-row">
+                  <span>${row[labelField]}</span>
+                  <div class="bar-track"><div class="bar-fill ${className}" style="width:${width}%"></div></div>
+                  <strong>${number(row[valueField]).toFixed(1)}</strong>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `;
+      }
+
+      function lineChart(points, color = "var(--blue)") {
+        const values = points.map(number);
+        const max = Math.max(...values, 1);
+        const min = Math.min(...values, 0);
+        const range = Math.max(max - min, 1);
+        const coords = values.map((value, index) => {
+          const x = values.length === 1 ? 0 : (index / (values.length - 1)) * 100;
+          const y = 92 - ((value - min) / range) * 78;
+          return `${x},${y}`;
+        }).join(" ");
+        return `
+          <div class="chart">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+              <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="3" />
+              <line x1="0" y1="92" x2="100" y2="92" stroke="#d7dee7" stroke-width="1" />
+            </svg>
+          </div>
+        `;
+      }
+
+      function scatterPlot(rows, xField, yField) {
+        const maxX = Math.max(...rows.map((row) => number(row[xField])), 1);
+        const maxY = Math.max(...rows.map((row) => number(row[yField])), 1);
+        return `
+          <div class="chart">
+            <svg viewBox="0 0 100 100">
+              ${rows.slice(0, 180).map((row) => {
+                const x = 6 + number(row[xField]) / maxX * 88;
+                const y = 94 - number(row[yField]) / maxY * 88;
+                return `<circle cx="${x}" cy="${y}" r="1.5" fill="var(--blue)" opacity="0.42" />`;
+              }).join("")}
+              <line x1="6" y1="94" x2="96" y2="94" stroke="#d7dee7" />
+              <line x1="6" y1="4" x2="6" y2="94" stroke="#d7dee7" />
+            </svg>
+          </div>
+        `;
+      }
+
+      function featureList(items) {
+        return `<div class="feature-list">${items.map((item) => `
+          <div class="feature">
+            <div><strong>${item.title}</strong><span>${item.body}</span></div>
+            <span class="badge">${item.badge}</span>
+          </div>
+        `).join("")}</div>`;
+      }
+
+      function alertBlock(title, body, tone = "amber") {
+        const cls = tone === "red" ? "red" : tone === "green" ? "green" : "";
+        return `<div class="alert ${cls}"><div class="alert-title">${title}</div><p>${body}</p></div>`;
+      }
+
+      function overridePanel(scope) {
+        const id = `override-${scope}`;
+        return `
+          <article class="card override-panel">
+            <h3>Manager Override Authority</h3>
+            <p class="note">Live metrics are read-only. Overrides create auditable action decisions for operations teams.</p>
+            <div class="override-controls">
+              <select id="${id}-action">
+                <option value="Reassign labor">Reassign labor</option>
+                <option value="Prioritize queue">Prioritize queue</option>
+                <option value="Escalate store">Escalate store</option>
+                <option value="Approve exception">Approve exception</option>
+                <option value="Open action plan">Open action plan</option>
+              </select>
+              <input id="${id}-reason" placeholder="Reason for override">
+              <button type="button" data-override="${scope}">Log Override</button>
+            </div>
+            <div class="override-log" id="${id}-log"></div>
+          </article>
+        `;
+      }
+
+      function bindOverride(scope) {
+        const button = document.querySelector(`[data-override="${scope}"]`);
+        if (!button) return;
+        button.addEventListener("click", () => {
+          const action = document.getElementById(`override-${scope}-action`).value;
+          const reasonInput = document.getElementById(`override-${scope}-reason`);
+          const reason = reasonInput.value.trim() || "Manager discretion";
+          const log = document.getElementById(`override-${scope}-log`);
+          const timestamp = new Date().toLocaleString();
+          log.insertAdjacentHTML("afterbegin", `<div class="override-entry"><strong>${action}</strong><br>${reason}<br><span>${timestamp} · Metrics unchanged</span></div>`);
+          reasonInput.value = "";
+        });
+      }
+
+      function rowsForRole(role) {
+        return state.scorecards.filter((employee) => employee.role === role);
+      }
+
+      function ordersByHour() {
+        const groups = groupBy(state.orders, (order) => new Date(order.created_at).getHours());
+        return Object.entries(groups).sort(([a], [b]) => Number(a) - Number(b)).map(([hour, rows]) => ({
+          hour,
+          avg_pick_rate: avg(rows, "pick_rate_items_per_hour"),
+          avg_stage: avg(rows, "staging_minutes"),
+          avg_wait: avg(rows, "customer_wait_minutes"),
+          orders: rows.length,
+        }));
+      }
+
+      function renderHome() {
+        const pickerAlerts = rowsForRole("picker").filter((row) => number(row.performance_score) < 45).length;
+        const stagingAlerts = state.bottlenecks.filter((row) => row.worst_stage === "staging" && row.severity !== "low").length;
+        const dispensingAlerts = state.bottlenecks.filter((row) => row.worst_stage === "dispensing" && row.severity !== "low").length;
+        const returnAlerts = state.returns.filter((row) => row.status === "pending").length;
+        const topStore = state.rankings[0];
+        const activePicking = state.orders.filter((order) => number(order.picking_minutes) > 35).length;
+        const stagedOrders = Math.round(number(state.summary.total_orders) * 0.18);
+        const queueLength = Math.round(number(state.summary.total_orders) * 0.05);
+
+        const tiles = [
+          {
+            page: "picking",
+            icon: "📦",
+            title: "PICKING",
+            metric: `${formatNumber(activePicking)} active`,
+            sub: `${number(state.summary.avg_pick_rate).toFixed(1)} items/hr`,
+            alert: `⚠ ${Math.min(pickerAlerts, 9)} alerts`,
+          },
+          {
+            page: "staging",
+            icon: "📍",
+            title: "STAGING",
+            metric: `${Math.min(94, Math.round(stagedOrders / 45))}% capacity`,
+            sub: `${number(state.summary.avg_staging_minutes).toFixed(1)} min avg`,
+            alert: `⚠ ${Math.max(1, stagingAlerts)} alert`,
+          },
+          {
+            page: "dispensing",
+            icon: "🚗",
+            title: "DISPENSING",
+            metric: `${number(state.summary.avg_customer_wait_minutes).toFixed(1)} min avg`,
+            sub: `${number(state.summary.avg_customer_rating).toFixed(1)} rating`,
+            alert: `⚠ ${Math.max(1, dispensingAlerts)} alerts`,
+          },
+          {
+            page: "returns",
+            icon: "🔄",
+            title: "OTHER",
+            metric: `${formatNumber(state.returns.length)} exceptions`,
+            sub: `${pct(state.returns.filter((row) => row.status === "resolved").length / Math.max(state.returns.length, 1) * 100)} resolved`,
+            alert: `⚠ ${Math.min(returnAlerts, 9)} alerts`,
+          },
+          {
+            page: "store",
+            icon: "🏪",
+            title: "TOTAL STORE",
+            metric: `Store #${topStore.store_number}`,
+            sub: `${topStore.sla_percent}% SLA`,
+            alert: "View all stores",
+            wide: true,
+          },
+        ];
+
+        document.getElementById("home-tiles").innerHTML = tiles.map((tile) => `
+          <button class="tile ${tile.wide ? "wide-tile" : ""}" type="button" data-page="${tile.page}">
+            <span class="tile-icon">${tile.icon}</span>
+            <h2>${tile.title}</h2>
+            <div class="tile-metric">${tile.metric}</div>
+            <p class="tile-sub">${tile.sub}</p>
+            <div class="tile-alert">${tile.alert}</div>
+            <span class="tile-link">Click →</span>
+          </button>
+        `).join("");
+
+        document.querySelectorAll("[data-page]").forEach((button) => {
+          button.addEventListener("click", () => showPage(button.dataset.page));
+        });
+      }
+
+      function renderStagePage(stage) {
+        if (stage === "picking") return renderPicking();
+        if (stage === "staging") return renderStaging();
+        if (stage === "dispensing") return renderDispensing();
+        return renderReturns();
+      }
+
+      function pageShell(stage, topKpis, mainSections, sidebarAlerts) {
+        const meta = pageMeta[stage];
+        return `
+          <div class="page-title">
+            <div>
+              <h2>${meta.title}</h2>
+              <p>${meta.subtitle}</p>
+            </div>
+          </div>
+          <div class="layout">
+            <div class="content-grid">
+              <section class="kpis">${topKpis.join("")}</section>
+              ${mainSections.join("")}
+            </div>
+            <aside class="sidebar">${overridePanel(stage)}${sidebarAlerts.join("")}</aside>
+          </div>
+        `;
+      }
+
+      function renderPicking() {
+        const pickers = rowsForRole("picker");
+        const topPickers = topRows(pickers, 20, "performance_score");
+        const bottomPickers = topRows(pickers, 10, "performance_score", "asc");
+        const hours = ordersByHour();
+        const storeBars = topRows(state.rankings, 10, "avg_pick_rate");
+        const largeOrders = state.orders.filter((order) => number(order.item_count) >= 45);
+        const smallOrders = state.orders.filter((order) => number(order.item_count) <= 10);
+
+        const topKpis = [
+          metric("Active Pickers", formatNumber(Math.round(pickers.length * 0.31)), "currently clocked in"),
+          metric("Orders Being Picked", formatNumber(Math.round(state.orders.length * 0.11)), "active pick walks"),
+          metric("Avg Pick Rate Now", `${number(state.summary.avg_pick_rate).toFixed(1)}/hr`, "items per hour"),
+          metric("Items Found", pct(100 - number(state.summary.substitution_percent)), "proxy from substitutions"),
+          metric("Picking Queue", formatNumber(Math.round(state.orders.length * 0.06)), "waiting to start"),
+        ];
+
+        const sections = [
+          `<section class="section-grid">
+            <article class="card"><h3>Picker Leaderboard</h3>${table(["Name", "Store", "Orders", "Rate", "Score"], topPickers.slice(0, 10).map((row) => `<tr><td>${row.name}</td><td>${row.store_id}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+            <article class="card"><h3>Bottom 10 Pickers</h3>${table(["Name", "Store", "Orders", "Rate", "Score"], bottomPickers.map((row) => `<tr><td>${row.name}</td><td>${row.store_id}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Pick Rate by Store</h3>${barList(storeBars, "store_number", "avg_pick_rate", Math.max(...storeBars.map((row) => number(row.avg_pick_rate))), "green")}</article>
+            <article class="card"><h3>Pick Rate by Hour</h3>${lineChart(hours.map((row) => row.avg_pick_rate), "var(--blue)")}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Pick Rate by Order Size</h3>${scatterPlot(state.orders, "item_count", "pick_rate_items_per_hour")}</article>
+            <article class="card"><h3>Before vs After Break</h3><div class="mini-grid">${metric("Before Lunch", `${avg(state.orders.filter((_, i) => i % 2 === 0), "pick_rate_items_per_hour").toFixed(1)}/hr`)}${metric("After Lunch", `${avg(state.orders.filter((_, i) => i % 2 === 1), "pick_rate_items_per_hour").toFixed(1)}/hr`)}${metric("Small Orders", `${avg(smallOrders, "picking_minutes").toFixed(1)} min`)}${metric("Large Orders", `${avg(largeOrders, "picking_minutes").toFixed(1)} min`)}</div></article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Operational Efficiency</h3>${featureList([
+              { title: "Missed Items Heatmap", body: "Stores with higher substitution pressure are highlighted.", badge: `${pct(state.summary.substitution_percent)}` },
+              { title: "Batch Efficiency", body: "Multi-order batches are modeled from high-item routes.", badge: "82" },
+              { title: "First-Time Pick Rate", body: "Orders completed without repick pressure.", badge: `${pct(100 - number(state.summary.substitution_percent) * 0.7)}` },
+              { title: "Picker Utilization", body: "Estimated share of shift spent actively picking.", badge: "74%" },
+              { title: "Idle Time Analysis", body: "Idle time inferred from queue and stage gaps.", badge: "18m" },
+            ])}</article>
+            <article class="card"><h3>Shift Comparison</h3>${barList([{ shift: "Morning", value: 43.8 }, { shift: "Midday", value: 39.6 }, { shift: "Evening", value: 36.9 }], "shift", "value", 50, "amber")}</article>
+          </section>`,
+        ];
+
+        const alerts = [
+          alertBlock("Fatigue Alert", "14 pickers show a sustained pick-rate decline after four consecutive active hours.", "red"),
+          alertBlock("Slow Picker Alert", "Bottom cohort is below threshold for more than 30 minutes.", "amber"),
+          alertBlock("High Miss Rate Alert", `Market substitution pressure is ${pct(state.summary.substitution_percent)}.`, "amber"),
+          alertBlock("New Picker Tracker", "30/60/90 day cohorts are available in the scorecard table.", "green"),
+          alertBlock("Cold Chain Timer", "Frozen-item routes over 28 minutes are flagged for manager review.", "red"),
+          alertBlock("Real-time Pick Speed", "Live feed placeholder is ready for streaming scanner events.", "green"),
+        ];
+
+        document.getElementById("picking-page").innerHTML = pageShell("picking", topKpis, sections, alerts);
+        bindOverride("picking");
+      }
+
+      function renderStaging() {
+        const stagers = rowsForRole("stager");
+        const stageStores = topRows(state.rankings, 10, "avg_staging_minutes", "asc");
+        const hours = ordersByHour();
+        const capacity = Math.min(96, Math.round(number(state.summary.total_orders) / 155));
+        const topKpis = [
+          metric("Staging Capacity", `${capacity}%`, "current modeled capacity"),
+          metric("Orders in Staging", formatNumber(Math.round(state.orders.length * 0.18)), "currently staged"),
+          metric("Avg Stage Time", minutes(state.summary.avg_staging_minutes), "drop-off to staged"),
+          metric("Retrieval Time", "3.7 min", "find order for dispenser"),
+          metric("Staging Queue", formatNumber(Math.round(state.orders.length * 0.035)), "waiting to stage"),
+        ];
+
+        const sections = [
+          `<section class="section-grid">
+            <article class="card"><h3>Stager Speed Ranking</h3>${table(["Name", "Store", "Orders", "Minutes", "Score"], topRows(stagers, 10, "performance_score").map((row) => `<tr><td>${row.name}</td><td>${row.store_id}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+            <article class="card"><h3>Organization Score</h3><div class="mini-grid">${metric("Organization", "86", "zone accuracy score")}${metric("Misplaced Rate", "2.8%", "modeled staging errors")}${metric("Utilization", "71%", "active staging time")}${metric("Training Needs", "18", "below standard")}</div></article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Stage Time by Store</h3>${barList(stageStores, "store_number", "avg_staging_minutes", 14, "teal")}</article>
+            <article class="card"><h3>Stage Time by Hour</h3>${lineChart(hours.map((row) => row.avg_stage), "var(--teal)")}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Stage to Dispense Gap</h3>${scatterPlot(state.orders, "item_count", "customer_wait_minutes")}</article>
+            <article class="card"><h3>Zone Balance Matrix</h3>${featureList(["A1", "A2", "B1", "B2", "Cold", "Frozen"].map((zone, index) => ({ title: `Zone ${zone}`, body: "Capacity, retrieval delay, and error pressure.", badge: `${68 + index * 5}%` })))}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Staging Efficiency</h3>${featureList([
+              { title: "Staging Zone Heatmap", body: "Overloaded zones are ranked by volume and age.", badge: "6 zones" },
+              { title: "Misplaced Order Rate", body: "Wrong-location exceptions from synthetic staging events.", badge: "2.8%" },
+              { title: "Cold Chain Compliance", body: "Temperature-sensitive orders staged correctly.", badge: "96%" },
+              { title: "Staging Error Trend", body: "Recent staging errors over time.", badge: "flat" },
+              { title: "Peak Staging Times", body: "Busiest staging windows by hour.", badge: "5-7 PM" },
+            ])}</article>
+            <article class="card"><h3>Handoff Delay</h3>${lineChart(hours.map((row) => row.avg_stage * 0.42 + 2), "var(--amber)")}</article>
+          </section>`,
+        ];
+
+        const alerts = [
+          alertBlock("Capacity Alert", `Staging capacity is ${capacity}% across the modeled market.`, capacity > 90 ? "red" : "amber"),
+          alertBlock("Order Not Found", "17 staged orders exceeded the modeled retrieval standard.", "red"),
+          alertBlock("Cold Chain Breach", "Frozen-zone timers show three orders near threshold.", "red"),
+          alertBlock("Zone Imbalance", "Cold and A2 zones need redistribution during peak volume.", "amber"),
+          alertBlock("Space Optimization", "Re-slot oversized orders away from high-turn pickup lanes.", "green"),
+          alertBlock("Real-time Staging Feed", "Ready for event streaming from staging scans.", "green"),
+        ];
+
+        document.getElementById("staging-page").innerHTML = pageShell("staging", topKpis, sections, alerts);
+        bindOverride("staging");
+      }
+
+      function renderDispensing() {
+        const dispensers = rowsForRole("dispenser");
+        const waitStores = topRows(state.rankings, 10, "avg_customer_wait_minutes", "asc");
+        const hours = ordersByHour();
+        const topKpis = [
+          metric("Active Dispensers", formatNumber(Math.round(dispensers.length * 0.27)), "currently dispensing"),
+          metric("Curbside Occupancy", "76%", "parking spots filled"),
+          metric("Avg Customer Wait", minutes(state.summary.avg_customer_wait_minutes), "arrival to received"),
+          metric("Avg Dispense Time", "5.9 min", "load into car"),
+          metric("Queue Length", formatNumber(Math.round(state.orders.length * 0.04)), "orders waiting"),
+        ];
+
+        const sections = [
+          `<section class="section-grid">
+            <article class="card"><h3>Dispenser Speed Ranking</h3>${table(["Name", "Store", "Orders", "Minutes", "Score"], topRows(dispensers, 10, "performance_score").map((row) => `<tr><td>${row.name}</td><td>${row.store_id}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+            <article class="card"><h3>Customer Experience Controls</h3><div class="mini-grid">${metric("ID Compliance", "98.4%", "alcohol and med checks")}${metric("Friendly Score", "4.7", "from feedback")}${metric("Utilization", "69%", "active dispensing")}${metric("No-Show Rate", "3.1%", "ready but never picked up")}</div></article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Wait Time by Store</h3>${barList(waitStores, "store_number", "avg_customer_wait_minutes", 12, "green")}</article>
+            <article class="card"><h3>Wait Time by Hour</h3>${lineChart(hours.map((row) => row.avg_wait), "var(--green)")}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Wait Time vs Order Size</h3>${scatterPlot(state.orders, "item_count", "customer_wait_minutes")}</article>
+            <article class="card"><h3>Slot Utilization</h3>${featureList(["8 AM", "10 AM", "12 PM", "2 PM", "5 PM", "7 PM"].map((slot, index) => ({ title: slot, body: "Pickup slot utilization and capacity pressure.", badge: `${58 + index * 7}%` })))}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Rating Distribution</h3>${barList([{ label: "5 star", value: 61 }, { label: "4 star", value: 24 }, { label: "3 star", value: 10 }, { label: "2 star", value: 3 }, { label: "1 star", value: 2 }], "label", "value", 65, "amber")}</article>
+            <article class="card"><h3>Customer Feedback Word Cloud</h3><div class="word-cloud"><span>fast</span><span>friendly</span><span>missing item</span><span>easy pickup</span><span>waited</span><span>cold items</span><span>great service</span><span>parking full</span><span>smooth</span></div></article>
+          </section>`,
+        ];
+
+        const alerts = [
+          alertBlock("Long Wait Alert", "Customers above 15 minutes are concentrated in evening arrivals.", "red"),
+          alertBlock("Curbside Full Alert", "Modeled occupancy is above comfort threshold.", "amber"),
+          alertBlock("No-Show Alert", "Orders ready longer than one hour need queue review.", "amber"),
+          alertBlock("Peak Time Alert", "Rush window begins at 5 PM with elevated arrival volume.", "green"),
+          alertBlock("Customer Arrival Predictor", "Next hour expected arrivals: 318 across the market.", "green"),
+          alertBlock("SLA Violation Warning", "Stores with at-risk promised times are prioritized in bottlenecks.", "red"),
+        ];
+
+        document.getElementById("dispensing-page").innerHTML = pageShell("dispensing", topKpis, sections, alerts);
+        bindOverride("dispensing");
+      }
+
+      function renderReturns() {
+        const groupedReasons = Object.entries(groupBy(state.returns, "reason")).map(([reason, rows]) => ({ reason, count: rows.length }));
+        const groupedTypes = Object.entries(groupBy(state.returns, "exception_type")).map(([type, rows]) => ({ type, count: rows.length }));
+        const returnRate = state.returns.length / state.orders.length * 100;
+        const resolved = state.returns.filter((row) => row.status === "resolved");
+        const topKpis = [
+          metric("Total Returns Today", formatNumber(state.returns.length), "returns and exceptions"),
+          metric("Return Rate", pct(returnRate), "of fulfilled orders"),
+          metric("Avg Resolution Time", minutes(avg(state.returns, "resolution_minutes")), "minutes to close"),
+          metric("Resolution Rate", pct(resolved.length / Math.max(state.returns.length, 1) * 100), "successfully resolved"),
+          metric("Return Value", `$${formatNumber(state.returns.reduce((sum, row) => sum + number(row.refund_amount), 0))}`, "refund exposure"),
+        ];
+
+        const sections = [
+          `<section class="section-grid">
+            <article class="card"><h3>Reason Breakdown</h3>${barList(groupedReasons, "reason", "count", Math.max(...groupedReasons.map((row) => row.count)), "amber")}</article>
+            <article class="card"><h3>Returns by Store</h3>${barList(Object.entries(groupBy(state.returns, "store_id")).map(([store_id, rows]) => ({ store_id, count: rows.length })).sort((a, b) => b.count - a.count).slice(0, 10), "store_id", "count", 30, "red")}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Returns by Category</h3>${barList(Object.entries(groupBy(state.returns, "category")).map(([category, rows]) => ({ category, count: rows.length })), "category", "count", 160, "teal")}</article>
+            <article class="card"><h3>Returns Trend</h3>${lineChart([22, 28, 25, 35, 31, 38, 44, 40, 47, 51, 49, 57], "var(--violet)")}</article>
+          </section>`,
+          `<section class="section-grid">
+            <article class="card"><h3>Exceptions</h3><div class="mini-grid">${metric("Order Cancellations", groupedTypes.find((row) => row.type === "cancellation")?.count || 0)}${metric("Failed Deliveries", groupedTypes.find((row) => row.type === "failed_delivery")?.count || 0)}${metric("Customer Complaints", groupedTypes.find((row) => row.type === "complaint")?.count || 0)}${metric("Refund Requests", groupedTypes.find((row) => row.type === "refund_request")?.count || 0)}</div></article>
+            <article class="card"><h3>Exception by Type</h3>${barList(groupedTypes, "type", "count", Math.max(...groupedTypes.map((row) => row.count)), "blue")}</article>
+          </section>`,
+        ];
+
+        const alerts = [
+          alertBlock("High Return Rate Alert", `Current exception rate is ${pct(returnRate)}.`, returnRate > 10 ? "red" : "amber"),
+          alertBlock("Fraud Suspicion", "High refund-risk scores are isolated for review.", "red"),
+          alertBlock("Unresolved Returns", `${state.returns.filter((row) => row.status === "pending").length} cases are pending resolution.`, "amber"),
+          alertBlock("Customer Dispute", "Escalated complaints are routed to store leadership.", "red"),
+          alertBlock("Return Trend Spike", "Late-order returns are trending above the prior baseline.", "amber"),
+        ];
+
+        document.getElementById("returns-page").innerHTML = pageShell("returns", topKpis, sections, alerts);
+        bindOverride("returns");
+      }
+
+      function renderStorePage() {
+        state.selectedStoreId = state.selectedStoreId || state.rankings[0].store_id;
+        document.getElementById("store-page").innerHTML = `
+          <div class="page-title">
+            <div>
+              <h2>🏪 Total Store Drill-Down</h2>
+              <p>Select a store, then inspect picking, staging, dispensing, delivery, trends, people, and action plans.</p>
+            </div>
+            <div class="selector">
+              <input id="store-search" type="search" placeholder="Search store or city">
+              <select id="store-select">${state.rankings.map((store) => `<option value="${store.store_id}">Store #${store.store_number} - ${store.city}</option>`).join("")}</select>
+            </div>
+          </div>
+          <div class="store-grid" id="store-grid"></div>
+          <div class="store-dashboard active" id="store-dashboard"></div>
+        `;
+
+        document.getElementById("store-select").value = state.selectedStoreId;
+        document.getElementById("store-select").addEventListener("change", (event) => {
+          state.selectedStoreId = event.target.value;
+          renderStoreButtons();
+          renderSelectedStore();
+        });
+        document.getElementById("store-search").addEventListener("input", renderStoreButtons);
+        renderStoreButtons();
+        renderSelectedStore();
+      }
+
+      function renderStoreButtons() {
+        const search = document.getElementById("store-search").value.toLowerCase();
+        const filtered = state.rankings.filter((store) => {
+          return !search || store.store_number.includes(search) || store.city.toLowerCase().includes(search) || store.state.toLowerCase().includes(search);
+        }).slice(0, 18);
+        document.getElementById("store-grid").innerHTML = filtered.map((store) => `
+          <button class="store-button ${store.store_id === state.selectedStoreId ? "active" : ""}" data-store="${store.store_id}" type="button">
+            <strong>Store #${store.store_number}</strong>
+            <span>${store.sla_percent}% SLA · ${store.city}</span>
+          </button>
+        `).join("");
+        document.querySelectorAll("[data-store]").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.selectedStoreId = button.dataset.store;
+            document.getElementById("store-select").value = state.selectedStoreId;
+            renderStoreButtons();
+            renderSelectedStore();
+          });
+        });
+      }
+
+      function renderSelectedStore() {
+        const store = state.rankings.find((row) => row.store_id === state.selectedStoreId) || state.rankings[0];
+        const storeOrders = state.orders.filter((order) => order.store_id === store.store_id);
+        const storeEmployees = state.scorecards.filter((employee) => employee.store_id === store.store_id);
+        const storeReturns = state.returns.filter((row) => row.store_id === store.store_id);
+        const rank = state.rankings.findIndex((row) => row.store_id === store.store_id) + 1;
+        const companyPickAvg = number(state.summary.avg_pick_rate);
+        const topPickers = topRows(storeEmployees.filter((row) => row.role === "picker"), 5, "performance_score");
+        const topStagers = topRows(storeEmployees.filter((row) => row.role === "stager"), 5, "performance_score");
+        const topDispensers = topRows(storeEmployees.filter((row) => row.role === "dispenser"), 5, "performance_score");
+
+        document.getElementById("store-dashboard").innerHTML = `
+          <div class="layout">
+            <div class="content-grid">
+              <section class="kpis">
+                ${metric(`Store #${store.store_number}`, `${store.city}, ${store.state}`, "selected store")}
+                ${metric("Health Score", store.efficiency_score, "0-100 composite")}
+                ${metric("Today's Orders", formatNumber(store.orders), "store volume")}
+                ${metric("SLA Compliance", `${store.sla_percent}%`, "on-time fulfillment")}
+                ${metric("Customer Rating", store.avg_customer_rating, "average stars")}
+              </section>
+              <section class="section-grid">
+                <article class="card"><h3>Picking at this Store</h3><div class="mini-grid">${metric("Pick Rate", `${store.avg_pick_rate}/hr`)}${metric("vs Company Avg", `${(number(store.avg_pick_rate) - companyPickAvg).toFixed(1)}/hr`)}${metric("Pick Issues", store.avg_pick_rate < companyPickAvg ? "Needs review" : "Healthy")}${metric("First-Time Pick", `${(100 - number(store.substitution_percent) * 0.8).toFixed(1)}%`)}</div>${table(["Top Picker", "Orders", "Rate", "Score"], topPickers.map((row) => `<tr><td>${row.name}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+                <article class="card"><h3>Staging at this Store</h3><div class="mini-grid">${metric("Stage Time", `${store.avg_staging_minutes} min`)}${metric("Capacity", `${Math.min(98, Math.round(number(store.orders) / 3))}%`)}${metric("Misplaced Orders", Math.round(number(store.orders) * 0.018))}${metric("Cold Chain", "96%")}</div>${table(["Top Stager", "Orders", "Minutes", "Score"], topStagers.map((row) => `<tr><td>${row.name}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+              </section>
+              <section class="section-grid">
+                <article class="card"><h3>Dispensing at this Store</h3><div class="mini-grid">${metric("Customer Wait", `${store.avg_customer_wait_minutes} min`)}${metric("Curbside Use", "73%")}${metric("No-Show Rate", "3.1%")}${metric("Rating", store.avg_customer_rating)}</div>${table(["Top Dispenser", "Orders", "Minutes", "Score"], topDispensers.map((row) => `<tr><td>${row.name}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+                <article class="card"><h3>Delivery from this Store</h3><div class="mini-grid">${metric("Delivery Volume", formatNumber(storeOrders.filter((row) => row.order_type === "delivery").length))}${metric("On-Time Delivery", `${Math.max(80, number(store.sla_percent) - 3).toFixed(1)}%`)}${metric("Avg Delivery Time", `${avg(storeOrders.filter((row) => row.order_type === "delivery"), "fulfillment_minutes").toFixed(1)} min`)}${metric("Delivery Issues", Math.round(storeReturns.length * 0.16))}</div>${featureList([{ title: "Top Drivers", body: "Driver table placeholder for delivery partner feed.", badge: "ready" }, { title: "Failed Deliveries", body: "Exceptions from this store delivery queue.", badge: storeReturns.filter((row) => row.exception_type === "failed_delivery").length }])}</article>
+              </section>
+              <section class="section-grid">
+                <article class="card"><h3>Store Trends</h3>${lineChart([store.orders * 0.72, store.orders * 0.82, store.orders * 0.79, store.orders * 0.88, store.orders * 0.92, store.orders], "var(--blue)")}${featureList([{ title: "Pick Rate Trend", body: "Modeled weekly progress from order history.", badge: "up" }, { title: "SLA Trend", body: "On-time performance across recent periods.", badge: `${store.sla_percent}%` }, { title: "Rating Trend", body: "Customer satisfaction movement.", badge: store.avg_customer_rating }, { title: "Return Rate Trend", body: "Store exceptions compared with orders.", badge: `${(storeReturns.length / Math.max(storeOrders.length, 1) * 100).toFixed(1)}%` }])}</article>
+                <article class="card"><h3>Employee Deep Dive</h3>${table(["Employee", "Role", "Orders", "Metric", "Score"], topRows(storeEmployees, 12, "performance_score").map((row) => `<tr><td>${row.name}</td><td>${row.role}</td><td>${row.orders_handled}</td><td>${row.average_value}</td><td>${row.performance_score}</td></tr>`))}</article>
+              </section>
+              <section class="section-grid">
+                <article class="card"><h3>Store Comparison</h3><div class="mini-grid">${metric("vs District Avg", `${(number(store.efficiency_score) - avg(state.rankings, "efficiency_score")).toFixed(1)}`)}${metric("vs Best Store", `${(number(state.rankings[0].efficiency_score) - number(store.efficiency_score)).toFixed(1)} gap`)}${metric("Store Ranking", `#${rank} of ${state.rankings.length}`)}${metric("Shift Coverage", "88%")}</div></article>
+                <article class="card"><h3>Store Action Plan</h3>${featureList([
+                  { title: "Improve weakest stage", body: "Prioritize the highest bottleneck score for this store.", badge: state.bottlenecks.find((row) => row.store_id === store.store_id)?.worst_stage || "review" },
+                  { title: "Coach low performers", body: "Assign training to employees below store benchmark.", badge: storeEmployees.filter((row) => number(row.performance_score) < 45).length },
+                  { title: "Reduce substitutions", body: "Partner with inventory on top missing categories.", badge: `${store.substitution_percent}%` },
+                  { title: "Protect SLA", body: "Add labor before high-volume pickup windows.", badge: `${store.sla_percent}%` },
+                ])}</article>
+              </section>
+            </div>
+            <aside class="sidebar">
+              ${overridePanel("store")}
+              ${alertBlock("Store SLA Alert", number(store.sla_percent) < 90 ? "Below 90% SLA. Immediate action needed." : "SLA is above the critical threshold.", number(store.sla_percent) < 90 ? "red" : "green")}
+              ${alertBlock("Staff Shortage", "Coverage model suggests additional picker support during peak windows.", "amber")}
+              ${alertBlock("Equipment Issue", "Scanner issue placeholder ready for device telemetry.", "amber")}
+              ${alertBlock("Space Constraint", "Staging fullness should be reviewed before evening pickup.", "red")}
+              ${alertBlock("Customer Complaints", `${storeReturns.filter((row) => row.exception_type === "complaint").length} recent complaint exceptions.`, "amber")}
+            </aside>
+          </div>
+        `;
+        bindOverride("store");
+      }
+
+      async function init() {
+        const [stores, employees, orders, rankings, scorecards, bottlenecks, summary, returns] = await Promise.all([
+          loadCsv("stores.csv"),
+          loadCsv("employees.csv"),
+          loadCsv("orders_enriched.csv"),
+          loadCsv("store_rankings.csv"),
+          loadCsv("employee_scorecards.csv"),
+          loadCsv("stage_bottlenecks.csv"),
+          loadCsv("market_summary.csv"),
+          loadCsv("returns_exceptions.csv"),
+        ]);
+
+        state.stores = stores;
+        state.employees = employees;
+        state.orders = orders;
+        state.rankings = rankings;
+        state.scorecards = scorecards;
+        state.bottlenecks = bottlenecks;
+        state.summary = summary[0];
+        state.returns = returns;
+
+        renderHome();
+        ["picking", "staging", "dispensing", "returns"].forEach(renderStagePage);
+        renderStorePage();
+      }
+
+      document.getElementById("back-home").addEventListener("click", () => showPage("home"));
+      init().catch((error) => {
+        document.querySelector(".app").innerHTML = `<section class="card"><h2>Dashboard load failed</h2><p>${error.message}</p></section>`;
+      });
+    </script>
+  </body>
+</html>
