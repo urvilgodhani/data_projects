@@ -4,6 +4,7 @@ import csv
 import os
 from pathlib import Path
 
+import certifi
 from pymongo import MongoClient
 
 
@@ -48,7 +49,7 @@ def main() -> None:
             "Example: export MONGODB_URI='mongodb+srv://...'"
         )
 
-    client = MongoClient(uri)
+    client = MongoClient(uri, tlsCAFile=certifi.where())
     database = client[database_name]
 
     for collection_name, file_name in COLLECTION_FILES.items():
