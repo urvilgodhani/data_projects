@@ -35,7 +35,10 @@ GitHub Pages remains the public frontend. It cannot run Python because it is a s
 - Ratings
 - Alerts
 
-The service stores a 24-hour snapshot trail in MongoDB Atlas.
+The service stores a 24-hour snapshot trail in MongoDB Atlas. MongoDB TTL
+indexes automatically expire live snapshots and events after the retention
+window. The current store-status collection is replaced in place, so it stays
+at approximately 50 documents instead of growing every minute.
 
 ## Run Locally
 
@@ -83,6 +86,7 @@ MONGODB_URI=mongodb+srv://...
 MONGODB_DATABASE=digital_fulfillment_ops
 SIMULATION_INTERVAL_SECONDS=60
 STORE_UPDATE_PERCENT=0.10
+LIVE_RETENTION_HOURS=24
 ```
 
 4. Deploy the repo. Railway reads `railway.toml`.
@@ -104,4 +108,3 @@ window.LIVE_API_URL = "https://YOUR-RAILWAY-DOMAIN";
 ## Demo Fallback
 
 Before the hosted API URL is configured, the GitHub Pages dashboard runs a clearly labeled browser simulation. This makes the live behavior visible immediately without exposing database credentials.
-

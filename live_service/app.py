@@ -11,7 +11,7 @@ from typing import Any
 import certifi
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pymongo import MongoClient
+from pymongo import MongoClient, ReplaceOne
 from pymongo.errors import PyMongoError
 
 
@@ -20,6 +20,7 @@ MONGODB_URI = os.environ.get("MONGODB_URI")
 SIMULATION_INTERVAL_SECONDS = int(os.environ.get("SIMULATION_INTERVAL_SECONDS", "60"))
 STORE_UPDATE_PERCENT = float(os.environ.get("STORE_UPDATE_PERCENT", "0.10"))
 HISTORY_LIMIT = int(os.environ.get("HISTORY_LIMIT", "180"))
+LIVE_RETENTION_HOURS = int(os.environ.get("LIVE_RETENTION_HOURS", "24"))
 
 random.seed()
 
@@ -102,9 +103,11 @@ def save_store_statuses(statuses: list[dict[str, Any]]) -> None:
     if database is None:
         return
     collection = database["live_store_status"]
-    collection.delete_many({})
     if statuses:
-        collection.insert_many(statuses)
+        collection.bulk_write(
+            [ReplaceOne({"store_id": status["store_id"]}, status, upsert=True) for status in statuses]
+        )
+        collection.delete_many({"store_id": {"$nin": list(memory_store_status)}})
 
 
 def load_store_statuses() -> list[dict[str, Any]]:
@@ -224,11 +227,20 @@ def save_snapshot(snapshot: dict[str, Any], events: list[dict[str, Any]]) -> Non
 
     if database is None:
         return
-    database["live_market_snapshots"].insert_one(snapshot)
-    database["live_events"].insert_many(events)
-    cutoff = datetime.now(UTC) - timedelta(hours=24)
+    expires_at = datetime.now(UTC) + timedelta(hours=LIVE_RETENTION_HOURS)
+    database["live_market_snapshots"].insert_one({**snapshot, "expires_at": expires_at})
+    database["live_events"].insert_many([{**event, "expires_at": expires_at} for event in events])
+    cutoff = datetime.now(UTC) - timedelta(hours=LIVE_RETENTION_HOURS)
     database["live_market_snapshots"].delete_many({"generated_at": {"$lt": cutoff.isoformat(timespec="seconds")}})
     database["live_events"].delete_many({"created_at": {"$lt": cutoff.isoformat(timespec="seconds")}})
+
+
+def ensure_retention_indexes() -> None:
+    if database is None:
+        return
+    database["live_store_status"].create_index("store_id", unique=True)
+    database["live_market_snapshots"].create_index("expires_at", expireAfterSeconds=0)
+    database["live_events"].create_index("expires_at", expireAfterSeconds=0)
 
 
 def simulate_tick() -> dict[str, Any]:
@@ -277,6 +289,7 @@ async def lifespan(_: FastAPI):
             )
             mongo_client.admin.command("ping")
             database = mongo_client[DATABASE_NAME]
+            ensure_retention_indexes()
         except PyMongoError:
             if mongo_client:
                 mongo_client.close()
@@ -316,6 +329,7 @@ def health() -> dict[str, Any]:
         "mongodb_connected": database is not None,
         "interval_seconds": SIMULATION_INTERVAL_SECONDS,
         "store_update_percent": STORE_UPDATE_PERCENT,
+        "live_retention_hours": LIVE_RETENTION_HOURS,
     }
 
 
