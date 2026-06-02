@@ -12,6 +12,7 @@ import certifi
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
+from pymongo.errors import PyMongoError
 
 
 DATABASE_NAME = os.environ.get("MONGODB_DATABASE", "digital_fulfillment_ops")
@@ -267,9 +268,20 @@ async def simulation_loop() -> None:
 async def lifespan(_: FastAPI):
     global mongo_client, database, simulation_task
     if MONGODB_URI:
-        mongo_client = MongoClient(MONGODB_URI, tlsCAFile=certifi.where())
-        database = mongo_client[DATABASE_NAME]
-        mongo_client.admin.command("ping")
+        try:
+            mongo_client = MongoClient(
+                MONGODB_URI,
+                tlsCAFile=certifi.where(),
+                serverSelectionTimeoutMS=5000,
+                connectTimeoutMS=5000,
+            )
+            mongo_client.admin.command("ping")
+            database = mongo_client[DATABASE_NAME]
+        except PyMongoError:
+            if mongo_client:
+                mongo_client.close()
+            mongo_client = None
+            database = None
     if not load_store_statuses():
         save_store_statuses(build_seed_statuses())
     simulate_tick()
@@ -323,4 +335,3 @@ def live_dashboard() -> dict[str, Any]:
         "history": history,
         "events": events,
     }
-
