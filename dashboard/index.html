@@ -456,6 +456,15 @@
         padding: 10px 13px;
       }
 
+      .live-strip.fresh {
+        animation: live-flash 900ms ease;
+      }
+
+      @keyframes live-flash {
+        0% { background: #c8efd9; border-color: #64bb88; }
+        100% { background: #e8f4ee; border-color: #b8dac8; }
+      }
+
       .live-label {
         align-items: center;
         display: flex;
@@ -594,6 +603,7 @@
         selectedStoreId: "",
         liveMode: "loading",
         lastLiveUpdate: "",
+        liveTickCount: 0,
       };
 
       const pageMeta = {
@@ -656,17 +666,28 @@
         return Math.round(number(value)).toLocaleString();
       }
 
-      function updateLiveStrip(mode, summary = {}) {
+      function updateLiveStrip(mode, summary = {}, previous = {}) {
         state.liveMode = mode;
         state.lastLiveUpdate = summary.generated_at || new Date().toISOString();
         const modeLabel = mode === "api" ? "LIVE API + MongoDB" : "LIVE DEMO SIMULATION";
         const changed = summary.stores_updated_this_tick ?? 5;
+        const pickDelta = number(summary.avg_pick_rate) - number(previous.avg_pick_rate, summary.avg_pick_rate);
+        const activeDelta = number(summary.active_employee_count) - number(previous.active_employee_count, summary.active_employee_count);
+        const sign = (value) => value > 0 ? `+${value}` : `${value}`;
+        const deltaText = previous.generated_at
+          ? ` · Pick ${sign(pickDelta.toFixed(2))}/hr · Active ${sign(Math.round(activeDelta))}`
+          : "";
         document.getElementById("live-mode").textContent = modeLabel;
-        document.getElementById("live-meta").textContent = `${changed} stores changed this tick · Updated ${new Date(state.lastLiveUpdate).toLocaleTimeString()}`;
+        document.getElementById("live-meta").textContent = `${changed} stores changed · Tick ${state.liveTickCount} · ${new Date(state.lastLiveUpdate).toLocaleTimeString()}${deltaText}`;
+        const strip = document.querySelector(".live-strip");
+        strip.classList.remove("fresh");
+        void strip.offsetWidth;
+        strip.classList.add("fresh");
       }
 
       function mutateDemoSummary() {
         const summary = state.summary;
+        const previous = { ...summary };
         summary.avg_pick_rate = clampNumber(number(summary.avg_pick_rate) + randomBetween(-1.2, 1.2), 28, 68).toFixed(2);
         summary.avg_staging_minutes = clampNumber(number(summary.avg_staging_minutes) + randomBetween(-0.5, 0.5), 3, 18).toFixed(2);
         summary.avg_customer_wait_minutes = clampNumber(number(summary.avg_customer_wait_minutes) + randomBetween(-0.7, 0.7), 2, 20).toFixed(2);
@@ -674,7 +695,8 @@
         summary.sla_percent = clampNumber(number(summary.sla_percent) + randomBetween(-1.1, 1.1), 76, 99).toFixed(2);
         summary.generated_at = new Date().toISOString();
         summary.stores_updated_this_tick = 5;
-        updateLiveStrip("demo", summary);
+        state.liveTickCount += 1;
+        updateLiveStrip("demo", summary, previous);
         renderHome();
       }
 
@@ -691,6 +713,8 @@
         const response = await fetch(`${liveApiUrl}/api/live`, { cache: "no-store" });
         if (!response.ok) throw new Error("Live API unavailable");
         const payload = await response.json();
+        const previous = { ...state.summary };
+        const isFreshTick = payload.summary.generated_at !== previous.generated_at;
         state.summary = { ...state.summary, ...payload.summary };
         if (payload.stores?.length) {
           const liveByStore = Object.fromEntries(payload.stores.map((store) => [store.store_id, store]));
@@ -707,7 +731,8 @@
             } : store;
           }).sort((a, b) => number(b.efficiency_score) - number(a.efficiency_score));
         }
-        updateLiveStrip("api", payload.summary);
+        if (isFreshTick) state.liveTickCount += 1;
+        updateLiveStrip("api", payload.summary, isFreshTick ? previous : {});
         renderHome();
         return true;
       }
@@ -1302,7 +1327,7 @@
           } catch (error) {
             mutateDemoSummary();
           }
-        }, 60000);
+        }, 15000);
       }
 
       document.getElementById("back-home").addEventListener("click", () => showPage("home"));
