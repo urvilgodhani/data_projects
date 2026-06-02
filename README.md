@@ -6,6 +6,17 @@ The project simulates store, employee, order, return, and manager action data; c
 
 ![Home screen](assets/home-screen.png)
 
+## Live Operations Mode
+
+The command center now supports visible minute-by-minute changes.
+
+- A Python service updates approximately 10% of stores each minute.
+- MongoDB Atlas stores live store status, snapshots, and event history.
+- The GitHub Pages dashboard polls a read-only API.
+- Before the hosted API is connected, the site uses a clearly labeled browser simulation fallback.
+
+See [Live data deployment](docs/live_data_deployment.md).
+
 ## Live Demo
 
 After GitHub Pages is enabled, the dashboard will be available at:
@@ -134,11 +145,19 @@ CSV analytics tables
         +--> MongoDB Atlas collections
 ```
 
+Live mode:
+
+```text
+Hosted Python simulator -> MongoDB Atlas -> Read-only API -> GitHub Pages dashboard
+```
+
 ## Tech Stack
 
 - Python
+- FastAPI
 - CSV analytics tables
 - MongoDB Atlas
+- Railway deployment config
 - Power BI
 - HTML, CSS, JavaScript
 - GitHub

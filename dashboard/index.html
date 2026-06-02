@@ -444,6 +444,39 @@
         line-height: 1.4;
       }
 
+      .live-strip {
+        align-items: center;
+        background: #e8f4ee;
+        border: 1px solid #b8dac8;
+        border-radius: 8px;
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        padding: 10px 13px;
+      }
+
+      .live-label {
+        align-items: center;
+        display: flex;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .live-dot {
+        background: var(--green);
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px rgba(31, 143, 99, 0.14);
+        height: 9px;
+        width: 9px;
+      }
+
+      .live-meta {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
       .override-panel {
         border-top: 4px solid var(--navy);
       }
@@ -529,6 +562,10 @@
     </header>
 
     <main class="app">
+      <section class="live-strip">
+        <div class="live-label"><span class="live-dot"></span><span id="live-mode">Connecting live operations...</span></div>
+        <div class="live-meta" id="live-meta">Waiting for first update</div>
+      </section>
       <section class="page active" id="home-page">
         <div class="home-grid" id="home-tiles"></div>
       </section>
@@ -540,8 +577,11 @@
       <section class="page" id="store-page"></section>
     </main>
 
+    <script src="../live-config.js"></script>
     <script>
       const dataPath = "../data/";
+      const configuredApiUrl = (window.LIVE_API_URL || "").replace(/\/$/, "");
+      const liveApiUrl = new URLSearchParams(window.location.search).get("api") || configuredApiUrl;
       const state = {
         stores: [],
         employees: [],
@@ -552,6 +592,8 @@
         returns: [],
         summary: {},
         selectedStoreId: "",
+        liveMode: "loading",
+        lastLiveUpdate: "",
       };
 
       const pageMeta = {
@@ -612,6 +654,62 @@
 
       function formatNumber(value) {
         return Math.round(number(value)).toLocaleString();
+      }
+
+      function updateLiveStrip(mode, summary = {}) {
+        state.liveMode = mode;
+        state.lastLiveUpdate = summary.generated_at || new Date().toISOString();
+        const modeLabel = mode === "api" ? "LIVE API + MongoDB" : "LIVE DEMO SIMULATION";
+        const changed = summary.stores_updated_this_tick ?? 5;
+        document.getElementById("live-mode").textContent = modeLabel;
+        document.getElementById("live-meta").textContent = `${changed} stores changed this tick · Updated ${new Date(state.lastLiveUpdate).toLocaleTimeString()}`;
+      }
+
+      function mutateDemoSummary() {
+        const summary = state.summary;
+        summary.avg_pick_rate = clampNumber(number(summary.avg_pick_rate) + randomBetween(-1.2, 1.2), 28, 68).toFixed(2);
+        summary.avg_staging_minutes = clampNumber(number(summary.avg_staging_minutes) + randomBetween(-0.5, 0.5), 3, 18).toFixed(2);
+        summary.avg_customer_wait_minutes = clampNumber(number(summary.avg_customer_wait_minutes) + randomBetween(-0.7, 0.7), 2, 20).toFixed(2);
+        summary.avg_customer_rating = clampNumber(number(summary.avg_customer_rating) + randomBetween(-0.08, 0.08), 3.4, 4.95).toFixed(2);
+        summary.sla_percent = clampNumber(number(summary.sla_percent) + randomBetween(-1.1, 1.1), 76, 99).toFixed(2);
+        summary.generated_at = new Date().toISOString();
+        summary.stores_updated_this_tick = 5;
+        updateLiveStrip("demo", summary);
+        renderHome();
+      }
+
+      function randomBetween(low, high) {
+        return low + Math.random() * (high - low);
+      }
+
+      function clampNumber(value, low, high) {
+        return Math.max(low, Math.min(high, value));
+      }
+
+      async function refreshFromLiveApi() {
+        if (!liveApiUrl) return false;
+        const response = await fetch(`${liveApiUrl}/api/live`, { cache: "no-store" });
+        if (!response.ok) throw new Error("Live API unavailable");
+        const payload = await response.json();
+        state.summary = { ...state.summary, ...payload.summary };
+        if (payload.stores?.length) {
+          const liveByStore = Object.fromEntries(payload.stores.map((store) => [store.store_id, store]));
+          state.rankings = state.rankings.map((store) => {
+            const live = liveByStore[store.store_id];
+            return live ? {
+              ...store,
+              sla_percent: live.sla_percent,
+              avg_pick_rate: live.pick_rate,
+              avg_staging_minutes: live.staging_minutes,
+              avg_customer_wait_minutes: live.customer_wait_minutes,
+              avg_customer_rating: live.customer_rating,
+              efficiency_score: live.efficiency_score,
+            } : store;
+          }).sort((a, b) => number(b.efficiency_score) - number(a.efficiency_score));
+        }
+        updateLiveStrip("api", payload.summary);
+        renderHome();
+        return true;
       }
 
       function groupBy(rows, key) {
@@ -782,7 +880,7 @@
         const dispensingAlerts = state.bottlenecks.filter((row) => row.worst_stage === "dispensing" && row.severity !== "low").length;
         const returnAlerts = state.returns.filter((row) => row.status === "pending").length;
         const topStore = state.rankings[0];
-        const activePicking = state.orders.filter((order) => number(order.picking_minutes) > 35).length;
+        const activePicking = state.summary.active_pickers ?? state.orders.filter((order) => number(order.picking_minutes) > 35).length;
         const stagedOrders = Math.round(number(state.summary.total_orders) * 0.18);
         const queueLength = Math.round(number(state.summary.total_orders) * 0.05);
 
@@ -799,7 +897,7 @@
             page: "staging",
             icon: "📍",
             title: "STAGING",
-            metric: `${Math.min(94, Math.round(stagedOrders / 45))}% capacity`,
+            metric: `${number(state.summary.staging_capacity_percent, Math.min(94, Math.round(stagedOrders / 45))).toFixed(0)}% capacity`,
             sub: `${number(state.summary.avg_staging_minutes).toFixed(1)} min avg`,
             alert: `⚠ ${Math.max(1, stagingAlerts)} alert`,
           },
@@ -882,11 +980,11 @@
         const smallOrders = state.orders.filter((order) => number(order.item_count) <= 10);
 
         const topKpis = [
-          metric("Active Pickers", formatNumber(Math.round(pickers.length * 0.31)), "currently clocked in"),
-          metric("Orders Being Picked", formatNumber(Math.round(state.orders.length * 0.11)), "active pick walks"),
+          metric("Active Pickers", formatNumber(state.summary.active_pickers ?? Math.round(pickers.length * 0.31)), "currently clocked in"),
+          metric("Orders Being Picked", formatNumber(state.summary.orders_in_progress ?? Math.round(state.orders.length * 0.11)), "active pick walks"),
           metric("Avg Pick Rate Now", `${number(state.summary.avg_pick_rate).toFixed(1)}/hr`, "items per hour"),
           metric("Items Found", pct(100 - number(state.summary.substitution_percent)), "proxy from substitutions"),
-          metric("Picking Queue", formatNumber(Math.round(state.orders.length * 0.06)), "waiting to start"),
+          metric("Picking Queue", formatNumber(state.summary.picking_queue ?? Math.round(state.orders.length * 0.06)), "waiting to start"),
         ];
 
         const sections = [
@@ -931,7 +1029,7 @@
         const stagers = rowsForRole("stager");
         const stageStores = topRows(state.rankings, 10, "avg_staging_minutes", "asc");
         const hours = ordersByHour();
-        const capacity = Math.min(96, Math.round(number(state.summary.total_orders) / 155));
+        const capacity = number(state.summary.staging_capacity_percent, Math.min(96, Math.round(number(state.summary.total_orders) / 155)));
         const topKpis = [
           metric("Staging Capacity", `${capacity}%`, "current modeled capacity"),
           metric("Orders in Staging", formatNumber(Math.round(state.orders.length * 0.18)), "currently staged"),
@@ -983,8 +1081,8 @@
         const waitStores = topRows(state.rankings, 10, "avg_customer_wait_minutes", "asc");
         const hours = ordersByHour();
         const topKpis = [
-          metric("Active Dispensers", formatNumber(Math.round(dispensers.length * 0.27)), "currently dispensing"),
-          metric("Curbside Occupancy", "76%", "parking spots filled"),
+          metric("Active Dispensers", formatNumber(state.summary.active_dispensers ?? Math.round(dispensers.length * 0.27)), "currently dispensing"),
+          metric("Curbside Occupancy", `${number(state.summary.curbside_occupancy_percent, 76).toFixed(0)}%`, "parking spots filled"),
           metric("Avg Customer Wait", minutes(state.summary.avg_customer_wait_minutes), "arrival to received"),
           metric("Avg Dispense Time", "5.9 min", "load into car"),
           metric("Queue Length", formatNumber(Math.round(state.orders.length * 0.04)), "orders waiting"),
@@ -1191,6 +1289,20 @@
         renderHome();
         ["picking", "staging", "dispensing", "returns"].forEach(renderStagePage);
         renderStorePage();
+        try {
+          const connected = await refreshFromLiveApi();
+          if (!connected) mutateDemoSummary();
+        } catch (error) {
+          mutateDemoSummary();
+        }
+        window.setInterval(async () => {
+          try {
+            const connected = await refreshFromLiveApi();
+            if (!connected) mutateDemoSummary();
+          } catch (error) {
+            mutateDemoSummary();
+          }
+        }, 60000);
       }
 
       document.getElementById("back-home").addEventListener("click", () => showPage("home"));
