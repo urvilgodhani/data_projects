@@ -35,10 +35,13 @@ GitHub Pages remains the public frontend. It cannot run Python because it is a s
 - Ratings
 - Alerts
 
-The service stores a 24-hour snapshot trail in MongoDB Atlas. MongoDB TTL
+The service stores a 72-hour snapshot trail in MongoDB Atlas. MongoDB TTL
 indexes automatically expire live snapshots and events after the retention
 window. The current store-status collection is replaced in place, so it stays
 at approximately 50 documents instead of growing every minute.
+
+This creates a rolling changelog: after 72 hours, the oldest minute expires as
+the newest minute is added.
 
 ## Run Locally
 
@@ -86,7 +89,7 @@ MONGODB_URI=mongodb+srv://...
 MONGODB_DATABASE=digital_fulfillment_ops
 SIMULATION_INTERVAL_SECONDS=60
 STORE_UPDATE_PERCENT=0.10
-LIVE_RETENTION_HOURS=24
+LIVE_RETENTION_HOURS=72
 ```
 
 4. Deploy the repo. Railway reads `railway.toml`.

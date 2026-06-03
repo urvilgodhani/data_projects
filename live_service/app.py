@@ -20,7 +20,7 @@ MONGODB_URI = os.environ.get("MONGODB_URI")
 SIMULATION_INTERVAL_SECONDS = int(os.environ.get("SIMULATION_INTERVAL_SECONDS", "60"))
 STORE_UPDATE_PERCENT = float(os.environ.get("STORE_UPDATE_PERCENT", "0.10"))
 HISTORY_LIMIT = int(os.environ.get("HISTORY_LIMIT", "180"))
-LIVE_RETENTION_HOURS = int(os.environ.get("LIVE_RETENTION_HOURS", "24"))
+LIVE_RETENTION_HOURS = int(os.environ.get("LIVE_RETENTION_HOURS", "72"))
 
 random.seed()
 
