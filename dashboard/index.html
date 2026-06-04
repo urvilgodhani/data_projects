@@ -6,22 +6,22 @@
     <title>Digital Fulfillment Command Center</title>
     <style>
       :root {
-        color-scheme: light;
-        --ink: #17202a;
-        --muted: #657180;
-        --soft: #8a96a5;
-        --line: #d8e0e8;
-        --page: #f3f6f8;
-        --panel: #ffffff;
-        --panel-2: #f8fafb;
-        --navy: #122436;
-        --blue: #1e6aa5;
-        --teal: #1f8a84;
-        --green: #1f8f63;
-        --amber: #c97812;
-        --red: #c83a3a;
-        --violet: #7654a6;
-        --shadow: 0 16px 36px rgba(27, 42, 58, 0.10);
+        color-scheme: dark;
+        --ink: #eaecef;
+        --muted: #848e9c;
+        --soft: #5e6673;
+        --line: #2b3139;
+        --page: #0b0e11;
+        --panel: #1e2329;
+        --panel-2: #262d35;
+        --navy: #0a0d11;
+        --blue: #45a3ff;
+        --teal: #00b8a9;
+        --green: #0ecb81;
+        --amber: #f0b90b;
+        --red: #f6465d;
+        --violet: #9b7cff;
+        --shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
       }
 
       * {
@@ -32,7 +32,7 @@
         margin: 0;
         background: var(--page);
         color: var(--ink);
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: Inter, "SF Pro Display", Arial, Helvetica, sans-serif;
         line-height: 1.35;
       }
 
@@ -43,43 +43,187 @@
       }
 
       header {
-        background: var(--navy);
+        background: #0a0d11;
+        border-bottom: 1px solid var(--line);
         color: white;
-        padding: 18px 28px;
+        height: 56px;
+        left: 0;
+        padding: 0 24px;
+        position: sticky;
+        right: 0;
+        top: 0;
+        z-index: 20;
       }
 
       .header-row {
         align-items: center;
         display: flex;
-        gap: 16px;
+        gap: 20px;
+        height: 100%;
         justify-content: space-between;
       }
 
       h1 {
-        font-size: 26px;
+        font-size: 16px;
+        font-weight: 800;
         letter-spacing: 0;
         margin: 0;
       }
 
       header p {
-        color: #c9d8e7;
-        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        margin: 0;
+      }
+
+      .brand {
+        align-items: center;
+        display: flex;
+        gap: 11px;
+        min-width: 238px;
+      }
+
+      .spark {
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--green);
+        display: inline-flex;
+        font-size: 14px;
+        font-weight: 900;
+        height: 30px;
+        justify-content: center;
+        width: 30px;
+      }
+
+      .market-selector {
+        align-items: center;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        display: flex;
+        flex: 1;
+        font-size: 13px;
+        gap: 10px;
+        max-width: 460px;
+        min-height: 34px;
+        padding: 0 12px;
+      }
+
+      .status-cluster {
+        align-items: center;
+        display: flex;
+        gap: 14px;
+      }
+
+      .top-status {
+        align-items: center;
+        color: var(--muted);
+        display: flex;
+        font-size: 12px;
+        gap: 7px;
+        white-space: nowrap;
+      }
+
+      .pulse-dot {
+        animation: pulse-dot 1.8s infinite;
+        background: var(--green);
+        border-radius: 50%;
+        height: 8px;
+        width: 8px;
+      }
+
+      @keyframes pulse-dot {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(14, 203, 129, 0.30); }
+        50% { box-shadow: 0 0 0 6px rgba(14, 203, 129, 0); }
       }
 
       .back {
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.24);
+        background: var(--panel);
+        border: 1px solid var(--line);
         border-radius: 6px;
-        color: var(--navy);
+        color: var(--ink);
         cursor: pointer;
         display: none;
         font-weight: 700;
         padding: 9px 12px;
       }
 
+      .app-sidebar {
+        background: #0a0d11;
+        border-right: 1px solid var(--line);
+        bottom: 0;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        left: 0;
+        padding: 18px 12px;
+        position: fixed;
+        top: 56px;
+        width: 240px;
+        z-index: 10;
+      }
+
+      .nav-list {
+        display: grid;
+        gap: 6px;
+      }
+
+      .nav-item {
+        align-items: center;
+        border-left: 3px solid transparent;
+        border-radius: 6px;
+        color: var(--muted);
+        display: grid;
+        font-size: 13px;
+        font-weight: 700;
+        gap: 8px;
+        grid-template-columns: 22px 1fr auto;
+        padding: 11px 10px;
+      }
+
+      .nav-item.active {
+        background: var(--panel);
+        border-left-color: var(--green);
+        color: var(--ink);
+      }
+
+      .nav-badge {
+        background: rgba(246, 70, 93, 0.12);
+        border: 1px solid rgba(246, 70, 93, 0.40);
+        border-radius: 999px;
+        color: var(--red);
+        font-size: 10px;
+        padding: 3px 6px;
+      }
+
+      .app-sidebar-meter {
+        display: grid;
+        gap: 12px;
+      }
+
+      .meter-label {
+        color: var(--muted);
+        display: flex;
+        font-size: 11px;
+        justify-content: space-between;
+      }
+
+      .meter-track {
+        background: var(--line);
+        border-radius: 999px;
+        height: 4px;
+        overflow: hidden;
+      }
+
+      .meter-fill {
+        background: var(--green);
+        height: 100%;
+      }
+
       .app {
-        margin: 18px auto 40px;
-        width: min(1420px, calc(100% - 32px));
+        margin: 24px 32px 40px 272px;
+        width: auto;
       }
 
       .market-overview {
@@ -110,8 +254,11 @@
       }
 
       .overview-value {
-        font-size: 27px;
+        color: var(--ink);
+        font-feature-settings: "tnum";
+        font-size: 32px;
         font-weight: 800;
+        letter-spacing: -1px;
         line-height: 1.05;
       }
 
@@ -129,7 +276,7 @@
       }
 
       .chip {
-        background: var(--panel-2);
+        background: #151a20;
         border: 1px solid var(--line);
         border-radius: 999px;
         color: var(--muted);
@@ -176,18 +323,27 @@
       }
 
       .tile h2 {
-        font-size: 23px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
         margin: 0;
       }
 
       .tile-icon {
-        font-size: 28px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
       }
 
       .tile-metric {
         color: var(--ink);
-        font-size: 22px;
+        font-feature-settings: "tnum";
+        font-size: 32px;
         font-weight: 700;
+        letter-spacing: -1px;
       }
 
       .tile-sub {
@@ -288,7 +444,7 @@
       .layout {
         display: grid;
         gap: 16px;
-        grid-template-columns: minmax(0, 1fr) 320px;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
       }
 
       .content-grid {
@@ -299,7 +455,7 @@
       .kpis {
         display: grid;
         gap: 12px;
-        grid-template-columns: repeat(5, minmax(130px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
       }
 
       .section-grid {
@@ -316,8 +472,12 @@
       }
 
       .card h3 {
-        font-size: 17px;
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
         margin: 0 0 13px;
+        text-transform: uppercase;
       }
 
       .mini-grid {
@@ -340,8 +500,11 @@
       }
 
       .metric-value {
-        font-size: 24px;
+        color: var(--ink);
+        font-feature-settings: "tnum";
+        font-size: 26px;
         font-weight: 700;
+        letter-spacing: -0.5px;
       }
 
       .metric-note {
@@ -363,7 +526,7 @@
       }
 
       .bar-track {
-        background: #e6ebf0;
+        background: var(--line);
         border-radius: 999px;
         height: 12px;
         overflow: hidden;
@@ -398,14 +561,17 @@
       table {
         border-collapse: collapse;
         font-size: 13px;
+        table-layout: fixed;
         width: 100%;
       }
 
       th,
       td {
         border-bottom: 1px solid var(--line);
+        overflow: hidden;
         padding: 9px 7px;
         text-align: left;
+        text-overflow: ellipsis;
         white-space: nowrap;
       }
 
@@ -413,6 +579,11 @@
         color: var(--muted);
         font-size: 11px;
         text-transform: uppercase;
+      }
+
+      th:first-child,
+      td:first-child {
+        width: 34%;
       }
 
       .sidebar {
@@ -474,7 +645,8 @@
       }
 
       .badge {
-        background: #e8f1f8;
+        background: rgba(69, 163, 255, 0.12);
+        border: 1px solid rgba(69, 163, 255, 0.30);
         border-radius: 999px;
         color: var(--blue);
         font-size: 12px;
@@ -566,8 +738,8 @@
 
       .live-strip {
         align-items: center;
-        background: #e8f4ee;
-        border: 1px solid #b8dac8;
+        background: rgba(14, 203, 129, 0.08);
+        border: 1px solid rgba(14, 203, 129, 0.30);
         border-radius: 8px;
         display: flex;
         gap: 10px;
@@ -581,8 +753,8 @@
       }
 
       @keyframes live-flash {
-        0% { background: #c8efd9; border-color: #64bb88; }
-        100% { background: #e8f4ee; border-color: #b8dac8; }
+        0% { background: rgba(14, 203, 129, 0.18); border-color: var(--green); }
+        100% { background: rgba(14, 203, 129, 0.08); border-color: rgba(14, 203, 129, 0.30); }
       }
 
       .live-label {
@@ -663,6 +835,15 @@
       }
 
       @media (max-width: 760px) {
+        .app-sidebar {
+          display: none;
+        }
+
+        .app {
+          margin: 18px auto 36px;
+          width: min(100% - 32px, 720px);
+        }
+
         .header-row,
         .page-title,
         .selector {
@@ -678,19 +859,56 @@
         .mini-grid {
           grid-template-columns: 1fr;
         }
+
+        .market-selector,
+        .status-cluster {
+          display: none;
+        }
       }
     </style>
   </head>
   <body>
     <header>
       <div class="header-row">
-        <div>
+        <div class="brand">
+          <span class="spark">✦</span>
+          <div>
           <h1>Digital Fulfillment Command Center</h1>
-          <p>Market Manager Dashboard</p>
+            <p>OGP Market Command</p>
+          </div>
+        </div>
+        <div class="market-selector">
+          <span>⌖</span>
+          <span>Market: North Texas DFW - 50 Stores</span>
+        </div>
+        <div class="status-cluster">
+          <span class="top-status"><span class="pulse-dot"></span> Live · GIF2 Online</span>
+          <span class="top-status">Current Drop: 3:00 PM - 4:00 PM</span>
         </div>
         <button class="back" id="back-home" type="button">← Home</button>
       </div>
     </header>
+
+    <aside class="app-sidebar">
+      <nav class="nav-list" aria-label="Command center navigation">
+        <div class="nav-item active"><span>▦</span><span>Overview</span><span></span></div>
+        <div class="nav-item"><span>⌂</span><span>Store View</span><span class="nav-badge">50</span></div>
+        <div class="nav-item"><span>◷</span><span>Wait Times</span><span class="nav-badge">3</span></div>
+        <div class="nav-item"><span>□</span><span>Order Flow</span><span></span></div>
+        <div class="nav-item"><span>◇</span><span>Associate Ops</span><span></span></div>
+        <div class="nav-item"><span>▤</span><span>Metrics</span><span></span></div>
+      </nav>
+      <div class="app-sidebar-meter">
+        <div>
+          <div class="meter-label"><span>Market On-Time Pick</span><span>96.8%</span></div>
+          <div class="meter-track"><div class="meter-fill" style="width:96.8%"></div></div>
+        </div>
+        <div>
+          <div class="meter-label"><span>Market CSAT</span><span>4.8</span></div>
+          <div class="meter-track"><div class="meter-fill" style="width:96%"></div></div>
+        </div>
+      </div>
+    </aside>
 
     <main class="app">
       <section class="live-strip">
@@ -731,22 +949,22 @@
 
       const pageMeta = {
         picking: {
-          title: "📦 Picking Command Page",
+          title: "Picking Command Page",
           subtitle: "Picker productivity, queue health, item accuracy, fatigue, and pick path performance.",
           color: "blue",
         },
         staging: {
-          title: "📍 Staging Command Page",
+          title: "Staging Command Page",
           subtitle: "Capacity, zone balance, cold chain compliance, retrieval speed, and staging bottlenecks.",
           color: "teal",
         },
         dispensing: {
-          title: "🚗 Dispensing Command Page",
+          title: "Dispensing Command Page",
           subtitle: "Customer wait, curbside flow, ratings, arrivals, no-shows, and SLA warnings.",
           color: "green",
         },
         returns: {
-          title: "🔄 Returns & Exceptions Command Page",
+          title: "Returns & Exceptions Command Page",
           subtitle: "Returns, cancellations, failed deliveries, complaints, refunds, and risk alerts.",
           color: "violet",
         },
@@ -1083,43 +1301,43 @@
         const tiles = [
           {
             page: "picking",
-            icon: "📦",
+            icon: "PKG",
             title: "PICKING",
             metric: `${formatNumber(activePicking)} active`,
             sub: `${number(state.summary.avg_pick_rate).toFixed(1)} items/hr`,
-            alert: `⚠ ${Math.min(pickerAlerts, 9)} alerts`,
+            alert: `${Math.min(pickerAlerts, 9)} active alerts`,
             trend: `${formatNumber(state.summary.picking_queue)} queued`,
           },
           {
             page: "staging",
-            icon: "📍",
+            icon: "STG",
             title: "STAGING",
             metric: `${number(state.summary.staging_capacity_percent, Math.min(94, Math.round(stagedOrders / 45))).toFixed(0)}% capacity`,
             sub: `${number(state.summary.avg_staging_minutes).toFixed(1)} min avg`,
-            alert: `⚠ ${Math.max(1, stagingAlerts)} alert`,
+            alert: `${Math.max(1, stagingAlerts)} active alert`,
             trend: `${formatNumber(state.summary.active_stagers)} active stagers`,
           },
           {
             page: "dispensing",
-            icon: "🚗",
+            icon: "DSP",
             title: "DISPENSING",
             metric: `${number(state.summary.avg_customer_wait_minutes).toFixed(1)} min avg`,
             sub: `${number(state.summary.avg_customer_rating).toFixed(1)} rating`,
-            alert: `⚠ ${Math.max(1, dispensingAlerts)} alerts`,
+            alert: `${Math.max(1, dispensingAlerts)} active alerts`,
             trend: `${formatNumber(state.summary.active_dispensers)} active dispensers`,
           },
           {
             page: "returns",
-            icon: "🔄",
+            icon: "RET",
             title: "OTHER",
             metric: `${formatNumber(state.returns.length)} exceptions`,
             sub: `${pct(state.returns.filter((row) => row.status === "resolved").length / Math.max(state.returns.length, 1) * 100)} resolved`,
-            alert: `⚠ ${Math.min(returnAlerts, 9)} alerts`,
+            alert: `${Math.min(returnAlerts, 9)} active alerts`,
             trend: `${formatNumber(state.summary.returns_open)} open live`,
           },
           {
             page: "store",
-            icon: "🏪",
+            icon: "STR",
             title: "TOTAL STORE",
             metric: `Store #${topStore.store_number}`,
             sub: `${topStore.sla_percent}% SLA`,
@@ -1376,7 +1594,7 @@
         document.getElementById("store-page").innerHTML = `
           <div class="page-title">
             <div>
-              <h2>🏪 Total Store Drill-Down</h2>
+              <h2>Total Store Drill-Down</h2>
               <p>Select a store, then inspect picking, staging, dispensing, delivery, trends, people, and action plans.</p>
             </div>
             <div class="selector">
