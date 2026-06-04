@@ -7,18 +7,21 @@
     <style>
       :root {
         color-scheme: light;
-        --ink: #18212c;
+        --ink: #17202a;
         --muted: #657180;
-        --line: #d7dee7;
-        --page: #f4f7fa;
+        --soft: #8a96a5;
+        --line: #d8e0e8;
+        --page: #f3f6f8;
         --panel: #ffffff;
-        --navy: #102942;
-        --blue: #1769aa;
+        --panel-2: #f8fafb;
+        --navy: #122436;
+        --blue: #1e6aa5;
         --teal: #1f8a84;
         --green: #1f8f63;
         --amber: #c97812;
         --red: #c83a3a;
         --violet: #7654a6;
+        --shadow: 0 16px 36px rgba(27, 42, 58, 0.10);
       }
 
       * {
@@ -30,6 +33,7 @@
         background: var(--page);
         color: var(--ink);
         font-family: Arial, Helvetica, sans-serif;
+        line-height: 1.35;
       }
 
       button,
@@ -41,7 +45,7 @@
       header {
         background: var(--navy);
         color: white;
-        padding: 18px 26px;
+        padding: 18px 28px;
       }
 
       .header-row {
@@ -52,7 +56,7 @@
       }
 
       h1 {
-        font-size: 25px;
+        font-size: 26px;
         letter-spacing: 0;
         margin: 0;
       }
@@ -63,8 +67,8 @@
       }
 
       .back {
-        background: #ffffff;
-        border: 0;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.24);
         border-radius: 6px;
         color: var(--navy);
         cursor: pointer;
@@ -74,8 +78,64 @@
       }
 
       .app {
-        margin: 22px auto 40px;
+        margin: 18px auto 40px;
         width: min(1420px, calc(100% - 32px));
+      }
+
+      .market-overview {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: minmax(260px, 1.15fr) repeat(4, minmax(150px, 1fr));
+        margin-bottom: 16px;
+      }
+
+      .overview-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      .overview-panel.primary {
+        border-left: 5px solid var(--blue);
+      }
+
+      .overview-eyebrow {
+        color: var(--soft);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .overview-value {
+        font-size: 27px;
+        font-weight: 800;
+        line-height: 1.05;
+      }
+
+      .overview-note {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 8px;
+      }
+
+      .overview-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .chip {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+        padding: 6px 9px;
       }
 
       .page {
@@ -88,7 +148,7 @@
 
       .home-grid {
         display: grid;
-        gap: 18px;
+        gap: 14px;
         grid-template-columns: repeat(3, minmax(220px, 1fr));
       }
 
@@ -97,51 +157,110 @@
         border: 1px solid var(--line);
         border-radius: 8px;
         cursor: pointer;
-        min-height: 230px;
-        padding: 22px;
+        min-height: 214px;
+        overflow: hidden;
+        padding: 0;
         text-align: left;
-        transition: transform 140ms ease, box-shadow 140ms ease;
+        transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
       }
 
       .tile:hover {
-        box-shadow: 0 14px 30px rgba(16, 41, 66, 0.12);
+        border-color: rgba(30, 106, 165, 0.55);
+        box-shadow: var(--shadow);
         transform: translateY(-2px);
       }
 
+      .tile:focus-visible {
+        outline: 3px solid rgba(30, 106, 165, 0.28);
+        outline-offset: 2px;
+      }
+
       .tile h2 {
-        font-size: 26px;
-        margin: 0 0 18px;
+        font-size: 23px;
+        margin: 0;
       }
 
       .tile-icon {
-        display: block;
-        font-size: 34px;
-        margin-bottom: 6px;
+        font-size: 28px;
       }
 
       .tile-metric {
         color: var(--ink);
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 700;
-        margin: 8px 0;
       }
 
       .tile-sub {
         color: var(--muted);
-        margin: 0 0 16px;
+        margin: 4px 0 0;
       }
 
       .tile-alert {
         color: var(--amber);
+        font-size: 13px;
         font-weight: 700;
-        margin-top: 12px;
       }
 
       .tile-link {
         color: var(--blue);
-        display: inline-block;
+        display: flex;
         font-weight: 700;
-        margin-top: 18px;
+        justify-content: space-between;
+        margin-top: 16px;
+      }
+
+      .tile-top {
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        padding: 16px 18px;
+      }
+
+      .tile-body {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+      }
+
+      .tile-footer {
+        align-items: center;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 18px 15px;
+      }
+
+      .tile-accent {
+        border-radius: 999px;
+        height: 10px;
+        width: 10px;
+      }
+
+      .tile-accent.picking {
+        background: var(--blue);
+      }
+
+      .tile-accent.staging {
+        background: var(--teal);
+      }
+
+      .tile-accent.dispensing {
+        background: var(--green);
+      }
+
+      .tile-accent.returns {
+        background: var(--violet);
+      }
+
+      .tile-accent.store {
+        background: var(--amber);
+      }
+
+      .tile-trend {
+        color: var(--muted);
+        font-size: 12px;
       }
 
       .wide-tile {
@@ -210,6 +329,7 @@
       .metric {
         border: 1px solid var(--line);
         border-radius: 8px;
+        background: var(--panel);
         padding: 12px;
       }
 
@@ -452,8 +572,8 @@
         display: flex;
         gap: 10px;
         justify-content: space-between;
-        margin-bottom: 16px;
-        padding: 10px 13px;
+        margin-bottom: 14px;
+        padding: 11px 14px;
       }
 
       .live-strip.fresh {
@@ -484,6 +604,7 @@
       .live-meta {
         color: var(--muted);
         font-size: 12px;
+        text-align: right;
       }
 
       .override-panel {
@@ -529,6 +650,7 @@
 
       @media (max-width: 1100px) {
         .home-grid,
+        .market-overview,
         .layout,
         .section-grid,
         .kpis {
@@ -576,6 +698,7 @@
         <div class="live-meta" id="live-meta">Waiting for first update</div>
       </section>
       <section class="page active" id="home-page">
+        <section class="market-overview" id="market-overview"></section>
         <div class="home-grid" id="home-tiles"></div>
       </section>
 
@@ -888,6 +1011,53 @@
         return state.scorecards.filter((employee) => employee.role === role);
       }
 
+      function renderMarketOverview() {
+        const activeEmployees = state.summary.active_employee_count ?? Math.round(state.employees.length * 0.68);
+        const activePickers = state.summary.active_pickers ?? Math.round(rowsForRole("picker").length * 0.62);
+        const activeStagers = state.summary.active_stagers ?? Math.round(rowsForRole("stager").length * 0.56);
+        const ordersMoving = state.summary.orders_in_progress ?? Math.round(number(state.summary.total_orders) * 0.18);
+        const pickQueue = state.summary.picking_queue ?? Math.round(number(state.summary.total_orders) * 0.05);
+        const storesUpdated = state.summary.stores_updated_this_tick ?? 5;
+        const worstStage = state.bottlenecks.reduce((counts, row) => {
+          counts[row.worst_stage] = (counts[row.worst_stage] || 0) + 1;
+          return counts;
+        }, {});
+        const bottleneck = Object.entries(worstStage).sort((a, b) => b[1] - a[1])[0]?.[0] || "picking";
+        const liveAge = state.lastLiveUpdate ? `${new Date(state.lastLiveUpdate).toLocaleTimeString()} update` : "waiting";
+        document.getElementById("market-overview").innerHTML = `
+          <article class="overview-panel primary">
+            <div class="overview-eyebrow">Market Health</div>
+            <div class="overview-value">${pct(state.summary.sla_percent)}</div>
+            <div class="overview-note">SLA compliance across ${formatNumber(state.rankings.length)} stores and ${formatNumber(state.employees.length)} employees.</div>
+            <div class="overview-chips">
+              <span class="chip">${state.liveMode === "api" ? "MongoDB live" : "demo mode"}</span>
+              <span class="chip">${state.liveTickCount} ticks</span>
+              <span class="chip">${liveAge}</span>
+            </div>
+          </article>
+          <article class="overview-panel">
+            <div class="overview-eyebrow">Active Labor</div>
+            <div class="overview-value">${formatNumber(activeEmployees)}</div>
+            <div class="overview-note">${formatNumber(activePickers)} picking · ${formatNumber(activeStagers)} staging</div>
+          </article>
+          <article class="overview-panel">
+            <div class="overview-eyebrow">Orders Moving</div>
+            <div class="overview-value">${formatNumber(ordersMoving)}</div>
+            <div class="overview-note">${formatNumber(pickQueue)} waiting to pick</div>
+          </article>
+          <article class="overview-panel">
+            <div class="overview-eyebrow">Bottleneck</div>
+            <div class="overview-value">${bottleneck}</div>
+            <div class="overview-note">${storesUpdated} stores updated this tick</div>
+          </article>
+          <article class="overview-panel">
+            <div class="overview-eyebrow">Customer Wait</div>
+            <div class="overview-value">${minutes(state.summary.avg_customer_wait_minutes)}</div>
+            <div class="overview-note">${number(state.summary.avg_customer_rating).toFixed(1)} average rating</div>
+          </article>
+        `;
+      }
+
       function ordersByHour() {
         const groups = groupBy(state.orders, (order) => new Date(order.created_at).getHours());
         return Object.entries(groups).sort(([a], [b]) => Number(a) - Number(b)).map(([hour, rows]) => ({
@@ -900,6 +1070,7 @@
       }
 
       function renderHome() {
+        renderMarketOverview();
         const pickerAlerts = rowsForRole("picker").filter((row) => number(row.performance_score) < 45).length;
         const stagingAlerts = state.bottlenecks.filter((row) => row.worst_stage === "staging" && row.severity !== "low").length;
         const dispensingAlerts = state.bottlenecks.filter((row) => row.worst_stage === "dispensing" && row.severity !== "low").length;
@@ -917,6 +1088,7 @@
             metric: `${formatNumber(activePicking)} active`,
             sub: `${number(state.summary.avg_pick_rate).toFixed(1)} items/hr`,
             alert: `⚠ ${Math.min(pickerAlerts, 9)} alerts`,
+            trend: `${formatNumber(state.summary.picking_queue)} queued`,
           },
           {
             page: "staging",
@@ -925,6 +1097,7 @@
             metric: `${number(state.summary.staging_capacity_percent, Math.min(94, Math.round(stagedOrders / 45))).toFixed(0)}% capacity`,
             sub: `${number(state.summary.avg_staging_minutes).toFixed(1)} min avg`,
             alert: `⚠ ${Math.max(1, stagingAlerts)} alert`,
+            trend: `${formatNumber(state.summary.active_stagers)} active stagers`,
           },
           {
             page: "dispensing",
@@ -933,6 +1106,7 @@
             metric: `${number(state.summary.avg_customer_wait_minutes).toFixed(1)} min avg`,
             sub: `${number(state.summary.avg_customer_rating).toFixed(1)} rating`,
             alert: `⚠ ${Math.max(1, dispensingAlerts)} alerts`,
+            trend: `${formatNumber(state.summary.active_dispensers)} active dispensers`,
           },
           {
             page: "returns",
@@ -941,6 +1115,7 @@
             metric: `${formatNumber(state.returns.length)} exceptions`,
             sub: `${pct(state.returns.filter((row) => row.status === "resolved").length / Math.max(state.returns.length, 1) * 100)} resolved`,
             alert: `⚠ ${Math.min(returnAlerts, 9)} alerts`,
+            trend: `${formatNumber(state.summary.returns_open)} open live`,
           },
           {
             page: "store",
@@ -949,18 +1124,29 @@
             metric: `Store #${topStore.store_number}`,
             sub: `${topStore.sla_percent}% SLA`,
             alert: "View all stores",
+            trend: `#1 market performer`,
             wide: true,
           },
         ];
 
         document.getElementById("home-tiles").innerHTML = tiles.map((tile) => `
           <button class="tile ${tile.wide ? "wide-tile" : ""}" type="button" data-page="${tile.page}">
-            <span class="tile-icon">${tile.icon}</span>
-            <h2>${tile.title}</h2>
-            <div class="tile-metric">${tile.metric}</div>
-            <p class="tile-sub">${tile.sub}</p>
-            <div class="tile-alert">${tile.alert}</div>
-            <span class="tile-link">Click →</span>
+            <div class="tile-top">
+              <span class="tile-icon">${tile.icon}</span>
+              <span class="tile-accent ${tile.page}"></span>
+            </div>
+            <div class="tile-body">
+              <h2>${tile.title}</h2>
+              <div>
+                <div class="tile-metric">${tile.metric}</div>
+                <p class="tile-sub">${tile.sub}</p>
+              </div>
+              <span class="tile-trend">${tile.trend}</span>
+            </div>
+            <div class="tile-footer">
+              <div class="tile-alert">${tile.alert}</div>
+              <span class="tile-link">Open <span>→</span></span>
+            </div>
           </button>
         `).join("");
 
