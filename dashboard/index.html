@@ -7,21 +7,21 @@
     <style>
       :root {
         color-scheme: dark;
-        --ink: #eaecef;
-        --muted: #848e9c;
-        --soft: #5e6673;
-        --line: #2b3139;
+        --ink: #f4f7fb;
+        --muted: #9aa6b7;
+        --soft: #667085;
+        --line: #252c36;
         --page: #0b0e11;
-        --panel: #1e2329;
-        --panel-2: #262d35;
+        --panel: #171c23;
+        --panel-2: #202733;
         --navy: #0a0d11;
-        --blue: #45a3ff;
-        --teal: #00b8a9;
+        --blue: #4da3ff;
+        --teal: #17c3b2;
         --green: #0ecb81;
         --amber: #f0b90b;
         --red: #f6465d;
-        --violet: #9b7cff;
-        --shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+        --violet: #a78bfa;
+        --shadow: 0 22px 60px rgba(0, 0, 0, 0.36);
       }
 
       * {
@@ -30,7 +30,9 @@
 
       body {
         margin: 0;
-        background: var(--page);
+        background:
+          linear-gradient(180deg, rgba(77, 163, 255, 0.055), transparent 220px),
+          var(--page);
         color: var(--ink);
         font-family: Inter, "SF Pro Display", Arial, Helvetica, sans-serif;
         line-height: 1.35;
@@ -85,7 +87,8 @@
 
       .spark {
         align-items: center;
-        border: 1px solid var(--line);
+        background: rgba(14, 203, 129, 0.10);
+        border: 1px solid rgba(14, 203, 129, 0.28);
         border-radius: 8px;
         color: var(--green);
         display: inline-flex;
@@ -109,6 +112,10 @@
         max-width: 460px;
         min-height: 34px;
         padding: 0 12px;
+      }
+
+      .market-selector strong {
+        color: var(--ink);
       }
 
       .status-cluster {
@@ -171,15 +178,26 @@
 
       .nav-item {
         align-items: center;
+        background: transparent;
+        border: 0;
         border-left: 3px solid transparent;
         border-radius: 6px;
         color: var(--muted);
+        cursor: pointer;
         display: grid;
         font-size: 13px;
         font-weight: 700;
         gap: 8px;
         grid-template-columns: 22px 1fr auto;
         padding: 11px 10px;
+        text-align: left;
+        transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+        width: 100%;
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.035);
+        color: var(--ink);
       }
 
       .nav-item.active {
@@ -226,18 +244,76 @@
         width: auto;
       }
 
+      .command-toolbar {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+
+      .command-title {
+        display: grid;
+        gap: 3px;
+      }
+
+      .command-title strong {
+        font-size: 18px;
+      }
+
+      .command-title span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .command-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .action-button {
+        align-items: center;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        cursor: pointer;
+        display: inline-flex;
+        font-size: 12px;
+        font-weight: 800;
+        gap: 8px;
+        min-height: 36px;
+        padding: 0 12px;
+        transition: border-color 140ms ease, transform 140ms ease, background 140ms ease;
+      }
+
+      .action-button:hover {
+        background: var(--panel-2);
+        border-color: rgba(77, 163, 255, 0.45);
+        transform: translateY(-1px);
+      }
+
+      .action-button.primary {
+        background: var(--green);
+        border-color: var(--green);
+        color: #06110c;
+      }
+
       .market-overview {
         display: grid;
-        gap: 14px;
-        grid-template-columns: minmax(260px, 1.15fr) repeat(4, minmax(150px, 1fr));
+        gap: 10px;
+        grid-template-columns: minmax(240px, 1.2fr) repeat(4, minmax(140px, 1fr));
         margin-bottom: 16px;
+        margin-top: 16px;
       }
 
       .overview-panel {
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 8px;
-        padding: 16px;
+        min-height: 122px;
+        padding: 15px;
       }
 
       .overview-panel.primary {
@@ -256,7 +332,7 @@
       .overview-value {
         color: var(--ink);
         font-feature-settings: "tnum";
-        font-size: 32px;
+        font-size: 30px;
         font-weight: 800;
         letter-spacing: -1px;
         line-height: 1.05;
@@ -295,16 +371,151 @@
 
       .home-grid {
         display: grid;
+        gap: 16px;
+      }
+
+      .command-board {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.75fr);
+      }
+
+      .command-focus {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: minmax(0, 1fr) minmax(240px, 0.7fr);
+        padding: 20px;
+      }
+
+      .focus-kicker {
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .focus-title {
+        font-size: 30px;
+        font-weight: 850;
+        letter-spacing: -1px;
+        line-height: 1.05;
+        margin: 8px 0 10px;
+      }
+
+      .focus-copy {
+        color: var(--muted);
+        margin: 0;
+        max-width: 720px;
+      }
+
+      .focus-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+        margin-top: 18px;
+      }
+
+      .signal-stack,
+      .priority-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .signal-card,
+      .priority-item {
+        background: #10151c;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 12px;
+      }
+
+      .signal-card span {
+        color: var(--muted);
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .signal-card strong {
+        display: block;
+        font-feature-settings: "tnum";
+        font-size: 22px;
+        margin-top: 5px;
+      }
+
+      .priority-panel {
+        background: #10151c;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px;
+      }
+
+      .priority-list {
+        margin-top: 12px;
+      }
+
+      .priority-item {
+        background: var(--panel);
+        color: var(--ink);
+        cursor: pointer;
+        display: grid;
+        gap: 4px;
+        text-align: left;
+        transition: border-color 140ms ease, transform 140ms ease, background 140ms ease;
+        width: 100%;
+      }
+
+      .priority-item:hover {
+        background: var(--panel-2);
+        border-color: rgba(77, 163, 255, 0.45);
+        transform: translateY(-1px);
+      }
+
+      .priority-item strong {
+        align-items: center;
+        display: flex;
+        gap: 8px;
+      }
+
+      .priority-item strong::before {
+        background: var(--amber);
+        border-radius: 50%;
+        content: "";
+        height: 8px;
+        width: 8px;
+      }
+
+      .priority-item.red strong::before {
+        background: var(--red);
+      }
+
+      .priority-item.green strong::before {
+        background: var(--green);
+      }
+
+      .priority-item span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .ops-grid {
+        display: grid;
         gap: 14px;
-        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        grid-template-columns: repeat(5, minmax(160px, 1fr));
       }
 
       .tile {
-        background: var(--panel);
+        background: #111720;
         border: 1px solid var(--line);
         border-radius: 8px;
         cursor: pointer;
-        min-height: 214px;
+        min-height: 186px;
         overflow: hidden;
         padding: 0;
         text-align: left;
@@ -312,7 +523,7 @@
       }
 
       .tile:hover {
-        border-color: rgba(30, 106, 165, 0.55);
+        border-color: rgba(77, 163, 255, 0.55);
         box-shadow: var(--shadow);
         transform: translateY(-2px);
       }
@@ -376,8 +587,8 @@
 
       .tile-body {
         display: grid;
-        gap: 12px;
-        padding: 18px;
+        gap: 10px;
+        padding: 16px 18px;
       }
 
       .tile-footer {
@@ -420,7 +631,7 @@
       }
 
       .wide-tile {
-        grid-column: span 2;
+        grid-column: span 1;
       }
 
       .page-title {
@@ -489,7 +700,7 @@
       .metric {
         border: 1px solid var(--line);
         border-radius: 8px;
-        background: var(--panel);
+        background: #111720;
         padding: 12px;
       }
 
@@ -627,6 +838,7 @@
         align-items: center;
         border: 1px solid var(--line);
         border-radius: 8px;
+        background: #111720;
         display: grid;
         gap: 10px;
         grid-template-columns: 1fr auto;
@@ -662,8 +874,10 @@
 
       .selector input,
       .selector select {
+        background: #111720;
         border: 1px solid var(--line);
         border-radius: 6px;
+        color: var(--ink);
         padding: 9px 10px;
       }
 
@@ -675,9 +889,10 @@
       }
 
       .store-button {
-        background: var(--panel);
+        background: #111720;
         border: 1px solid var(--line);
         border-radius: 8px;
+        color: var(--ink);
         cursor: pointer;
         padding: 13px;
         text-align: left;
@@ -780,7 +995,7 @@
       }
 
       .override-panel {
-        border-top: 4px solid var(--navy);
+        border-top: 4px solid var(--green);
       }
 
       .override-controls {
@@ -790,17 +1005,19 @@
 
       .override-controls select,
       .override-controls input {
+        background: #111720;
         border: 1px solid var(--line);
         border-radius: 6px;
+        color: var(--ink);
         padding: 9px 10px;
         width: 100%;
       }
 
       .override-controls button {
-        background: var(--navy);
+        background: var(--green);
         border: 0;
         border-radius: 6px;
-        color: white;
+        color: #06110c;
         cursor: pointer;
         font-weight: 700;
         padding: 10px 12px;
@@ -813,15 +1030,42 @@
       }
 
       .override-entry {
-        background: #f4f7fa;
+        background: #111720;
         border: 1px solid var(--line);
         border-radius: 8px;
         font-size: 12px;
         padding: 9px;
       }
 
+      .toast {
+        background: var(--panel);
+        border: 1px solid rgba(14, 203, 129, 0.35);
+        border-radius: 8px;
+        bottom: 18px;
+        box-shadow: var(--shadow);
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 800;
+        opacity: 0;
+        padding: 12px 14px;
+        pointer-events: none;
+        position: fixed;
+        right: 18px;
+        transform: translateY(10px);
+        transition: opacity 180ms ease, transform 180ms ease;
+        z-index: 50;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
       @media (max-width: 1100px) {
         .home-grid,
+        .command-board,
+        .command-focus,
+        .ops-grid,
         .market-overview,
         .layout,
         .section-grid,
@@ -831,6 +1075,13 @@
 
         .wide-tile {
           grid-column: span 1;
+        }
+      }
+
+      @media (max-width: 960px) {
+        .market-selector,
+        .status-cluster {
+          display: none;
         }
       }
 
@@ -845,6 +1096,7 @@
         }
 
         .header-row,
+        .command-toolbar,
         .page-title,
         .selector {
           align-items: stretch;
@@ -860,10 +1112,6 @@
           grid-template-columns: 1fr;
         }
 
-        .market-selector,
-        .status-cluster {
-          display: none;
-        }
       }
     </style>
   </head>
@@ -873,13 +1121,13 @@
         <div class="brand">
           <span class="spark">✦</span>
           <div>
-          <h1>Digital Fulfillment Command Center</h1>
+            <h1>Digital Fulfillment Command Center</h1>
             <p>OGP Market Command</p>
           </div>
         </div>
         <div class="market-selector">
           <span>⌖</span>
-          <span>Market: North Texas DFW - 50 Stores</span>
+          <span>Market: <strong>North Texas DFW</strong> - 50 Stores</span>
         </div>
         <div class="status-cluster">
           <span class="top-status"><span class="pulse-dot"></span> Live · GIF2 Online</span>
@@ -891,12 +1139,12 @@
 
     <aside class="app-sidebar">
       <nav class="nav-list" aria-label="Command center navigation">
-        <div class="nav-item active"><span>▦</span><span>Overview</span><span></span></div>
-        <div class="nav-item"><span>⌂</span><span>Store View</span><span class="nav-badge">50</span></div>
-        <div class="nav-item"><span>◷</span><span>Wait Times</span><span class="nav-badge">3</span></div>
-        <div class="nav-item"><span>□</span><span>Order Flow</span><span></span></div>
-        <div class="nav-item"><span>◇</span><span>Associate Ops</span><span></span></div>
-        <div class="nav-item"><span>▤</span><span>Metrics</span><span></span></div>
+        <button class="nav-item active" type="button" data-nav="home"><span>▦</span><span>Overview</span><span></span></button>
+        <button class="nav-item" type="button" data-nav="store"><span>⌂</span><span>Store View</span><span class="nav-badge">50</span></button>
+        <button class="nav-item" type="button" data-nav="dispensing"><span>◷</span><span>Wait Times</span><span class="nav-badge">3</span></button>
+        <button class="nav-item" type="button" data-nav="staging"><span>□</span><span>Order Flow</span><span></span></button>
+        <button class="nav-item" type="button" data-nav="picking"><span>◇</span><span>Associate Ops</span><span></span></button>
+        <button class="nav-item" type="button" data-nav="returns"><span>▤</span><span>Exceptions</span><span></span></button>
       </nav>
       <div class="app-sidebar-meter">
         <div>
@@ -911,13 +1159,24 @@
     </aside>
 
     <main class="app">
+      <section class="command-toolbar">
+        <div class="command-title">
+          <strong>Market cockpit</strong>
+          <span>One screen for flow, exceptions, labor, and store action.</span>
+        </div>
+        <div class="command-actions">
+          <button class="action-button primary" type="button" id="refresh-now">Refresh now</button>
+          <button class="action-button" type="button" data-nav="store">Open store view</button>
+          <button class="action-button" type="button" data-nav="picking">Associate ops</button>
+        </div>
+      </section>
       <section class="live-strip">
         <div class="live-label"><span class="live-dot"></span><span id="live-mode">Connecting live operations...</span></div>
         <div class="live-meta" id="live-meta">Waiting for first update</div>
       </section>
       <section class="page active" id="home-page">
-        <section class="market-overview" id="market-overview"></section>
         <div class="home-grid" id="home-tiles"></div>
+        <section class="market-overview" id="market-overview"></section>
       </section>
 
       <section class="page" id="picking-page"></section>
@@ -926,6 +1185,7 @@
       <section class="page" id="returns-page"></section>
       <section class="page" id="store-page"></section>
     </main>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="../live-config.js"></script>
     <script>
@@ -1039,6 +1299,7 @@
         state.liveTickCount += 1;
         updateLiveStrip("demo", summary, previous);
         renderHome();
+        refreshActivePage();
       }
 
       function randomBetween(low, high) {
@@ -1075,6 +1336,7 @@
         if (isFreshTick) state.liveTickCount += 1;
         updateLiveStrip("api", payload.summary, isFreshTick ? previous : {});
         renderHome();
+        refreshActivePage();
         return true;
       }
 
@@ -1098,7 +1360,30 @@
         document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
         document.getElementById(`${name}-page`).classList.add("active");
         document.getElementById("back-home").style.display = name === "home" ? "none" : "inline-block";
+        document.querySelectorAll("[data-nav]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.nav === name);
+        });
         window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 2200);
+      }
+
+      function refreshActivePage() {
+        const activeId = document.querySelector(".page.active")?.id || "home-page";
+        const activeName = activeId.replace("-page", "");
+        if (activeName === "home") return;
+        if (["picking", "staging", "dispensing", "returns"].includes(activeName)) {
+          renderStagePage(activeName);
+        }
+        if (activeName === "store") {
+          renderStorePage();
+        }
       }
 
       function metric(label, value, note = "") {
@@ -1151,7 +1436,7 @@
           <div class="chart">
             <svg viewBox="0 0 100 100" preserveAspectRatio="none">
               <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="3" />
-              <line x1="0" y1="92" x2="100" y2="92" stroke="#d7dee7" stroke-width="1" />
+              <line x1="0" y1="92" x2="100" y2="92" stroke="var(--line)" stroke-width="1" />
             </svg>
           </div>
         `;
@@ -1168,8 +1453,8 @@
                 const y = 94 - number(row[yField]) / maxY * 88;
                 return `<circle cx="${x}" cy="${y}" r="1.5" fill="var(--blue)" opacity="0.42" />`;
               }).join("")}
-              <line x1="6" y1="94" x2="96" y2="94" stroke="#d7dee7" />
-              <line x1="6" y1="4" x2="6" y2="94" stroke="#d7dee7" />
+              <line x1="6" y1="94" x2="96" y2="94" stroke="var(--line)" />
+              <line x1="6" y1="4" x2="6" y2="94" stroke="var(--line)" />
             </svg>
           </div>
         `;
@@ -1222,6 +1507,7 @@
           const timestamp = new Date().toLocaleString();
           log.insertAdjacentHTML("afterbegin", `<div class="override-entry"><strong>${action}</strong><br>${reason}<br><span>${timestamp} · Metrics unchanged</span></div>`);
           reasonInput.value = "";
+          showToast(`${action} logged for ${scope}`);
         });
       }
 
@@ -1296,7 +1582,10 @@
         const topStore = state.rankings[0];
         const activePicking = state.summary.active_pickers ?? state.orders.filter((order) => number(order.picking_minutes) > 35).length;
         const stagedOrders = Math.round(number(state.summary.total_orders) * 0.18);
-        const queueLength = Math.round(number(state.summary.total_orders) * 0.05);
+        const atRiskStores = state.rankings.filter((store) => number(store.sla_percent) < 90).length;
+        const criticalStage = state.bottlenecks[0]?.worst_stage || "staging";
+        const waitPressure = number(state.summary.avg_customer_wait_minutes) > 12 ? "High" : "Controlled";
+        const laborSignal = number(state.summary.active_employee_count) > 0 ? "Coverage live" : "Coverage loading";
 
         const tiles = [
           {
@@ -1347,26 +1636,57 @@
           },
         ];
 
-        document.getElementById("home-tiles").innerHTML = tiles.map((tile) => `
-          <button class="tile ${tile.wide ? "wide-tile" : ""}" type="button" data-page="${tile.page}">
-            <div class="tile-top">
-              <span class="tile-icon">${tile.icon}</span>
-              <span class="tile-accent ${tile.page}"></span>
-            </div>
-            <div class="tile-body">
-              <h2>${tile.title}</h2>
+        document.getElementById("home-tiles").innerHTML = `
+          <section class="command-board">
+            <article class="command-focus">
               <div>
-                <div class="tile-metric">${tile.metric}</div>
-                <p class="tile-sub">${tile.sub}</p>
+                <div class="focus-kicker">Live market brief</div>
+                <div class="focus-title">${criticalStage.toUpperCase()} is the current constraint.</div>
+                <p class="focus-copy">The market is moving ${formatNumber(state.summary.orders_in_progress ?? state.orders.length * 0.18)} active orders with ${formatNumber(state.summary.picking_queue)} waiting to enter pick flow. Focus on queue relief, staging balance, and wait-time protection before the next pickup wave.</p>
+                <div class="focus-actions">
+                  <button class="action-button primary" type="button" data-page="staging">Attack bottleneck</button>
+                  <button class="action-button" type="button" data-page="dispensing">Check wait pressure</button>
+                  <button class="action-button" type="button" data-page="store">Open store ranking</button>
+                </div>
               </div>
-              <span class="tile-trend">${tile.trend}</span>
-            </div>
-            <div class="tile-footer">
-              <div class="tile-alert">${tile.alert}</div>
-              <span class="tile-link">Open <span>→</span></span>
-            </div>
-          </button>
-        `).join("");
+              <div class="signal-stack">
+                <div class="signal-card"><span>At-risk stores</span><strong>${atRiskStores}</strong></div>
+                <div class="signal-card"><span>Customer wait</span><strong>${waitPressure}</strong></div>
+                <div class="signal-card"><span>Labor state</span><strong>${laborSignal}</strong></div>
+              </div>
+            </article>
+            <aside class="priority-panel">
+              <div class="overview-eyebrow">Priority queue</div>
+              <div class="priority-list">
+                <button class="priority-item red" type="button" data-page="dispensing"><strong>Protect curbside wait</strong><span>${minutes(state.summary.avg_customer_wait_minutes)} average across active stores.</span></button>
+                <button class="priority-item" type="button" data-page="picking"><strong>Coach pick variance</strong><span>${Math.min(pickerAlerts, 9)} picker alerts below expected pace.</span></button>
+                <button class="priority-item green" type="button" data-page="store"><strong>Review top store playbook</strong><span>Store #${topStore.store_number} leads the market at ${topStore.sla_percent}% SLA.</span></button>
+              </div>
+            </aside>
+          </section>
+          <section class="ops-grid">
+            ${tiles.map((tile) => `
+              <button class="tile ${tile.wide ? "wide-tile" : ""}" type="button" data-page="${tile.page}">
+                <div class="tile-top">
+                  <span class="tile-icon">${tile.icon}</span>
+                  <span class="tile-accent ${tile.page}"></span>
+                </div>
+                <div class="tile-body">
+                  <h2>${tile.title}</h2>
+                  <div>
+                    <div class="tile-metric">${tile.metric}</div>
+                    <p class="tile-sub">${tile.sub}</p>
+                  </div>
+                  <span class="tile-trend">${tile.trend}</span>
+                </div>
+                <div class="tile-footer">
+                  <div class="tile-alert">${tile.alert}</div>
+                  <span class="tile-link">Open <span>→</span></span>
+                </div>
+              </button>
+            `).join("")}
+          </section>
+        `;
 
         document.querySelectorAll("[data-page]").forEach((button) => {
           button.addEventListener("click", () => showPage(button.dataset.page));
@@ -1735,6 +2055,19 @@
       }
 
       document.getElementById("back-home").addEventListener("click", () => showPage("home"));
+      document.querySelectorAll("[data-nav]").forEach((button) => {
+        button.addEventListener("click", () => showPage(button.dataset.nav));
+      });
+      document.getElementById("refresh-now").addEventListener("click", async () => {
+        try {
+          const connected = await refreshFromLiveApi();
+          if (!connected) mutateDemoSummary();
+          showToast("Dashboard refreshed");
+        } catch (error) {
+          mutateDemoSummary();
+          showToast("Demo simulation refreshed");
+        }
+      });
       init().catch((error) => {
         document.querySelector(".app").innerHTML = `<section class="card"><h2>Dashboard load failed</h2><p>${error.message}</p></section>`;
       });
