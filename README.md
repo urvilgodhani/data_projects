@@ -292,4 +292,5 @@ This project demonstrates:
 - [MongoDB Atlas guide](docs/mongodb_atlas_guide.md)
 - [Power BI guide](docs/power_bi_guide.md)
 - [GitHub showcase guide](docs/github_showcase.md)
+- [Beacons portfolio showcase](docs/beacons_showcase.md)
 - [Project plan](docs/project_plan.md)
