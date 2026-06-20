@@ -1,36 +1,28 @@
-# GitHub Showcase Guide
+# GitHub Showcase Record
 
-Use GitHub as the public portfolio home for this project.
+GitHub is the public portfolio home for this project.
 
-## Recommended Repository Name
+## Repository
 
 ```text
-digital-fulfillment-command-center
+https://github.com/urvilgodhani/data_projects
+```
+
+## Live Dashboard
+
+```text
+https://urvilgodhani.github.io/data_projects/
 ```
 
 ## Short Project Description
 
 ```text
-Retail digital fulfillment analytics project with synthetic order lifecycle data, MongoDB loading, Power BI-ready datasets, and an interactive command-center dashboard.
+Live retail fulfillment analytics for 50 synthetic stores, with Python pipelines, MongoDB history, FastAPI updates, Power BI-ready data, and an interactive command center.
 ```
 
-## README Story
+## Published Screenshots
 
-Lead with the business problem:
-
-```text
-Market Managers need a fast way to monitor online order fulfillment across stores, detect bottlenecks, compare associate performance, and take action without editing live operational metrics.
-```
-
-Then show the solution:
-
-```text
-This project simulates a 50-store retail market, generates 12,000 online orders, tracks each order through picking, staging, dispensing, delivery, and returns, calculates operational KPIs, and visualizes insights in a local command center and Power BI-ready tables.
-```
-
-## Suggested Screenshots
-
-Add screenshots to a future `assets/` folder:
+The final screenshot set is stored in `assets/`:
 
 - `home-screen.png`
 - `picking-page.png`
@@ -38,7 +30,6 @@ Add screenshots to a future `assets/` folder:
 - `dispensing-page.png`
 - `returns-page.png`
 - `store-drilldown.png`
-- `power-bi-overview.png`
 
 ## Portfolio Talking Points
 
@@ -49,13 +40,14 @@ Add screenshots to a future `assets/` folder:
 - Modeled manager override authority as auditable actions instead of editable metrics
 - Prepared data for MongoDB Atlas and Power BI
 
-## First Commit Checklist
+## Final Release Checklist
 
-- README is polished
-- `.env` is ignored
-- `.env.example` is included
-- Generated sample data is present
-- Dashboard runs locally
-- MongoDB guide is present
-- Power BI guide is present
-
+- [x] Portfolio README is polished
+- [x] Synthetic-data disclaimer is visible
+- [x] `.env` is ignored and `.env.example` is included
+- [x] Generated sample data is present
+- [x] Dashboard runs locally and on GitHub Pages
+- [x] Live API has health and read-only data endpoints
+- [x] MongoDB history uses bounded retention
+- [x] Current dashboard screenshots are published
+- [x] Data model, MongoDB, Power BI, deployment, and case-study guides are present

@@ -30,5 +30,9 @@ Optional environment variables:
 SIMULATION_INTERVAL_SECONDS=60
 STORE_UPDATE_PERCENT=0.10
 HISTORY_LIMIT=180
+LIVE_RETENTION_HOURS=72
 ```
 
+`live_store_status` is updated in place. Snapshot and event documents expire
+automatically after the retention window, keeping the database footprint
+bounded while preserving a rolling operational history.

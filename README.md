@@ -1,296 +1,259 @@
 # Digital Fulfillment Command Center
 
-A portfolio-ready retail operations analytics project for monitoring online order fulfillment across a 50-store market.
+[![Live Dashboard](https://img.shields.io/badge/Live_Dashboard-Open-2dd4bf?style=for-the-badge)](https://urvilgodhani.github.io/data_projects/)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Live_API-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/atlas)
+[![Power BI Ready](https://img.shields.io/badge/Power_BI-Ready-F2C811?style=flat-square&logo=powerbi&logoColor=111)](docs/power_bi_guide.md)
 
-The project simulates store, employee, order, return, and manager action data; calculates operational KPIs; and presents the results in a local command-center dashboard with Power BI-ready datasets and MongoDB Atlas loading support.
+A portfolio case study in retail operations analytics: synthetic order-lifecycle data, KPI engineering, a live simulation API, bounded MongoDB history, and an interactive command center for a 50-store market.
 
-![Home screen](assets/home-screen.png)
+> All stores, employees, orders, and performance values are synthetic. This independent educational project is not affiliated with or endorsed by Walmart or any other retailer.
 
-## Live Operations Mode
+![Digital Fulfillment Command Center overview](assets/home-screen.png)
 
-The command center now supports visible minute-by-minute changes.
+## Explore the Project
 
-- A Python service updates approximately 10% of stores each minute.
-- MongoDB Atlas stores live store status, snapshots, and event history.
-- The GitHub Pages dashboard polls a read-only API.
-- Before the hosted API is connected, the site uses a clearly labeled browser simulation fallback.
+- [Open the live dashboard](https://urvilgodhani.github.io/data_projects/)
+- [Read the data model](docs/data_model.md)
+- [Review the live architecture](docs/live_data_deployment.md)
+- [Build the Power BI version](docs/power_bi_guide.md)
+- [See the portfolio case-study copy](docs/beacons_showcase.md)
 
-See [Live data deployment](docs/live_data_deployment.md).
+## Executive Summary
 
-## Live Demo
+Market Managers need to monitor fulfillment performance across many stores without digging through separate operational systems. This project turns the order lifecycle into one decision surface: it identifies struggling stores, stage bottlenecks, customer wait risks, employee performance patterns, and exceptions that need action.
 
-After GitHub Pages is enabled, the dashboard will be available at:
+The system models:
 
-```text
-https://urvilgodhani.github.io/data_projects/
+- **50 stores** across one synthetic market
+- **5,000 employees** in picking, staging, and dispensing roles
+- **12,000 orders** with complete lifecycle timestamps
+- **10 analytics datasets** prepared for Power BI and MongoDB
+- **6 interactive dashboard views** with drill-through navigation
+- **Minute-level live simulation** that updates about 10% of stores per tick
+- **72-hour rolling history** enforced with MongoDB TTL indexes
+
+## Business Questions
+
+The command center is designed to answer:
+
+- Which stores are missing SLA right now?
+- Is the constraint in picking, staging, or dispensing?
+- Where are customer waits and curbside queues increasing?
+- Which associates are leading, improving, or need coaching?
+- Are returns, refunds, and complaints creating unusual risk?
+- What action can a Market Manager take without changing the source metrics?
+
+## Product Tour
+
+### 1. Market Cockpit
+
+The home screen summarizes market health, live connection status, the current bottleneck, the priority queue, stage-level operational pods, and leadership actions.
+
+![Market Cockpit](assets/home-screen.png)
+
+### 2. Picking Operations
+
+Tracks active pickers, queue depth, item-found rate, pick speed, leaderboards, missed-item pressure, fatigue signals, order-size impact, and shift comparisons.
+
+![Picking operations](assets/picking-page.png)
+
+### 3. Staging Operations
+
+Tracks staging capacity, stage time, retrieval time, zone balance, misplaced orders, cold-chain compliance, handoff delays, and congestion.
+
+![Staging operations](assets/staging-page.png)
+
+### 4. Dispensing Operations
+
+Tracks customer wait, curbside occupancy, queue length, dispenser performance, customer ratings, no-shows, slot utilization, and SLA risk.
+
+![Dispensing operations](assets/dispensing-page.png)
+
+### 5. Returns and Exceptions
+
+Tracks return reasons, refund exposure, cancellations, failed deliveries, complaints, resolution rate, unresolved cases, and fraud-risk signals.
+
+![Returns and exceptions](assets/returns-page.png)
+
+### 6. Store Drill-Down
+
+Lets leadership select a store and compare its SLA, efficiency, stage performance, employee results, trends, issues, and recommended actions.
+
+![Store drill-down](assets/store-drilldown.png)
+
+## How It Works
+
+```mermaid
+flowchart LR
+    A["Python synthetic data generator"] --> B["CSV analytics layer"]
+    B --> C["Power BI-ready model"]
+    B --> D["MongoDB Atlas"]
+    D --> E["FastAPI live simulator"]
+    E --> F["Read-only JSON API"]
+    F --> G["GitHub Pages command center"]
+    B --> G
 ```
 
-## Business Problem
+The dashboard first attempts to read the hosted API. If the service is unavailable, it switches to a clearly labeled browser simulation so the public portfolio remains usable.
 
-Market Managers need a fast way to understand whether digital fulfillment is running smoothly across many stores.
-
-They need to know:
-
-- Which stores are missing SLA?
-- Where are bottlenecks happening: picking, staging, or dispensing?
-- Which employees are top performers?
-- Which stores need training, staffing, or escalation?
-- Which returns and exceptions are creating customer pain?
-- What operational actions should leadership take?
-
-## Solution
-
-This project builds a command center that tracks online orders through the fulfillment lifecycle:
+### Order Lifecycle
 
 ```text
 Order Created -> Picking -> Staging -> Dispensing -> Delivery / Return
 ```
 
-Every stage has timestamps. Those timestamps power the analytics.
+Every stage is timestamped. KPIs are calculated from those timestamps instead of being manually entered.
 
-## Dashboard Pages
+## Analytics Model
 
-### Home
+| KPI | Calculation | Decision Supported |
+|---|---|---|
+| Pick rate | Items / picking minutes x 60 | Labor coaching and workload balance |
+| Staging time | Stage complete - stage start | Congestion and layout issues |
+| Customer wait | Dispense complete - dispense start | Curbside experience risk |
+| Fulfillment time | Completion - order creation | End-to-end speed |
+| SLA compliance | On-time orders / total orders | Store accountability |
+| Substitution rate | Substituted items / total items | Inventory availability pressure |
+| Efficiency score | Weighted operational composite | Store comparison and prioritization |
+| Return rate | Returned orders / total orders | Quality and customer experience |
 
-The home screen has 5 clickable command tiles:
+See [the full data model](docs/data_model.md) for entities and fields.
 
-- Picking
-- Staging
-- Dispensing
-- Other / Returns
-- Total Store
+## Live Data Design
 
-![Home screen](assets/home-screen.png)
+The live service mutates approximately 10% of stores every 60 seconds. Each tick recalculates staffing, in-progress orders, queue pressure, SLA, wait time, rating, and efficiency.
 
-### Picking
+MongoDB stores:
 
-Tracks active pickers, orders being picked, average pick rate, queue depth, item-found rate, picker leaderboard, slow-picking alerts, shift comparison, fatigue risk, and pick-rate trends.
+- `live_store_status`: one current-state document per store
+- `live_market_snapshots`: market history for trend analysis
+- `live_events`: stage-level change events
 
-![Picking page](assets/picking-page.png)
+Snapshots and events receive an expiration timestamp. TTL indexes automatically remove records after 72 hours, keeping the Atlas footprint bounded while preserving a useful rolling changelog.
 
-### Staging
+The public endpoint exposes read-only operational data. Database credentials are never sent to the browser.
 
-Tracks staging capacity, staged orders, average stage time, retrieval time, staging queue, zone balance, cold-chain compliance, misplaced orders, and staging bottlenecks.
+## Manager Override Governance
 
-![Staging page](assets/staging-page.png)
+The Market Manager can override operational decisions, but cannot rewrite performance data.
 
-### Dispensing
+| Allowed leadership actions | Read-only source metrics |
+|---|---|
+| Reassign labor | SLA percentage |
+| Prioritize a queue | Pick rate |
+| Escalate a store | Customer wait |
+| Approve an exception | Customer rating |
+| Open an action plan | Lifecycle timestamps |
 
-Tracks active dispensers, curbside occupancy, average customer wait, queue length, customer ratings, no-shows, slot utilization, and SLA violation warnings.
+Every action is logged with scope, reason, timestamp, and an explicit `Metrics unchanged` marker. This separates authority from data integrity.
 
-![Dispensing page](assets/dispensing-page.png)
+## Key Engineering Decisions
 
-### Returns & Exceptions
+1. **Model the process, not random numbers.** Synthetic timestamps follow a valid lifecycle, which makes the derived metrics internally consistent.
+2. **Separate current state from history.** Store status is updated in place; snapshots and events use rolling retention.
+3. **Keep the frontend deployable anywhere.** The dashboard is plain HTML, CSS, and JavaScript hosted on GitHub Pages.
+4. **Keep the backend portable.** FastAPI runs locally or on a Python host using environment-based configuration.
+5. **Design for degraded service.** A labeled fallback keeps the portfolio interactive when a free hosted API sleeps or expires.
+6. **Treat overrides as auditable commands.** Managers can act on the operation without editing the facts.
 
-Tracks returns, refund requests, cancellations, failed deliveries, complaints, return reasons, resolution time, refund exposure, and fraud-risk indicators.
+## Technology
 
-![Returns page](assets/returns-page.png)
+| Layer | Tools |
+|---|---|
+| Data generation | Python, seeded synthetic logic, CSV |
+| Analytics | Python, timestamp-derived KPIs |
+| API | FastAPI, Uvicorn |
+| Database | MongoDB Atlas, TTL indexes |
+| Frontend | HTML, CSS, JavaScript |
+| BI preparation | Power BI-ready fact and summary tables |
+| Hosting | GitHub Pages; portable Python service configuration |
+| Version control | Git, GitHub |
 
-### Total Store Drill-Down
-
-Lets a Market Manager select a store and view store-specific performance across picking, staging, dispensing, delivery, trends, employees, comparisons, and action plans.
-
-![Store drill-down](assets/store-drilldown.png)
-
-## Manager Override Rule
-
-The Market Manager can override operational actions, but not live metrics.
-
-Allowed actions:
-
-- Reassign labor
-- Prioritize queues
-- Escalate stores
-- Approve exceptions
-- Open action plans
-
-Not allowed:
-
-- Editing SLA %
-- Editing pick rate
-- Editing wait time
-- Editing customer ratings
-- Editing timestamps
-
-The dashboard models this through auditable action logs. Metrics remain read-only.
-
-## Metrics
-
-- Total orders
-- SLA percentage
-- Average pick rate
-- Average staging time
-- Average customer wait
-- Fulfillment time
-- Substitution rate
-- Customer rating
-- Store efficiency score
-- Employee performance score
-- Bottleneck stage
-- Return rate
-- Resolution rate
-
-## Architecture
-
-```text
-Python data generator
-        |
-        v
-CSV analytics tables
-        |
-        +--> Local HTML command center
-        |
-        +--> Power BI dashboard
-        |
-        +--> MongoDB Atlas collections
-```
-
-Live mode:
-
-```text
-Hosted Python simulator -> MongoDB Atlas -> Read-only API -> GitHub Pages dashboard
-```
-
-## Tech Stack
-
-- Python
-- FastAPI
-- CSV analytics tables
-- MongoDB Atlas
-- Railway deployment config
-- Power BI
-- HTML, CSS, JavaScript
-- GitHub
-
-## Project Structure
+## Repository Structure
 
 ```text
 .
-├── .env.example
-├── .gitignore
-├── assets/
-│   ├── dispensing-page.png
-│   ├── home-screen.png
-│   ├── picking-page.png
-│   ├── returns-page.png
-│   ├── staging-page.png
-│   └── store-drilldown.png
-├── dashboard/
-│   └── index.html
-├── data/
-│   ├── employee_scorecards.csv
-│   ├── employees.csv
-│   ├── manager_overrides.csv
-│   ├── market_summary.csv
-│   ├── orders.csv
-│   ├── orders_enriched.csv
-│   ├── returns_exceptions.csv
-│   ├── stage_bottlenecks.csv
-│   ├── store_rankings.csv
-│   └── stores.csv
-├── docs/
-│   ├── data_model.md
-│   ├── github_showcase.md
-│   ├── mongodb_atlas_guide.md
-│   ├── power_bi_guide.md
-│   └── project_plan.md
-├── scripts/
-│   ├── analyze_operations.py
-│   ├── generate_data.py
-│   ├── load_to_mongodb.py
-│   └── run_pipeline.py
+├── assets/                 # Current portfolio screenshots
+├── dashboard/index.html    # Interactive command center
+├── data/                   # Generated and enriched CSV datasets
+├── docs/                   # Architecture, BI, deployment, and case-study guides
+├── live_service/app.py     # FastAPI simulator and read-only API
+├── scripts/                # Generation, analytics, loading, and pipeline scripts
+├── index.html              # GitHub Pages entry point
+├── live-config.js          # Hosted API endpoint configuration
+├── railway.toml            # Existing deployment configuration
 ├── requirements.txt
-└── README.md
+└── startup.sh              # Portable production start command
 ```
 
-## Quick Start
+## Run Locally
 
-Generate data:
-
-```bash
-python3 scripts/generate_data.py
-```
-
-Calculate analytics:
-
-```bash
-python3 scripts/analyze_operations.py
-```
-
-Or rebuild everything at once:
+### Static analytics dashboard
 
 ```bash
 python3 scripts/run_pipeline.py
-```
-
-Start the local dashboard:
-
-```bash
 python3 -m http.server 8000
 ```
 
-Then visit:
+Open `http://127.0.0.1:8000/dashboard/`.
 
-```text
-http://127.0.0.1:8000/dashboard/
-```
-
-## MongoDB Atlas
-
-Install dependencies:
+### Live API
 
 ```bash
 python3 -m pip install -r requirements.txt
+uvicorn live_service.app:app --reload
 ```
 
-Set environment variables:
+Without `MONGODB_URI`, the service runs in memory. To persist live state, set:
 
 ```bash
 export MONGODB_URI="mongodb+srv://username:password@cluster-name.mongodb.net/"
 export MONGODB_DATABASE="digital_fulfillment_ops"
+export LIVE_RETENTION_HOURS="72"
 ```
 
-Load data:
+Useful endpoints:
 
-```bash
-python3 scripts/load_to_mongodb.py
-```
+- `GET /health`
+- `GET /api/live`
 
-See [MongoDB Atlas guide](docs/mongodb_atlas_guide.md).
+## Verification
 
-## Power BI
+The final release was checked with:
 
-Use the CSV files in `data/` as the first Power BI data source.
+- Python compilation for the service and pipeline scripts
+- Full synthetic data regeneration and analytics calculation
+- API health and live-response checks
+- Desktop and mobile browser layouts
+- Navigation, drill-through, refresh, and override interactions
+- Repository secret scan, link review, and clean Git diff validation
 
-Recommended pages:
+## What This Demonstrates
 
-- Home
-- Picking
-- Staging
-- Dispensing
-- Returns
-- Store Dashboard
-
-See [Power BI guide](docs/power_bi_guide.md).
-
-## Portfolio Story
-
-This project demonstrates:
-
-- Data modeling
-- Synthetic data generation
-- Operational KPI design
-- Analytics engineering
-- Dashboard design
-- MongoDB loading
-- Power BI planning
-- GitHub project documentation
+- Translating an operations problem into an analytics product
+- Designing a timestamp-based fact model
+- Building reproducible synthetic datasets
+- Engineering decision-oriented KPIs
+- Separating a static frontend from a live API
+- Managing bounded retention in MongoDB
+- Preparing clean tables for Power BI
+- Designing an operational UI for scanning and repeated action
+- Documenting technical tradeoffs for a portfolio audience
 
 ## Documentation
 
 - [Data model](docs/data_model.md)
+- [Live data deployment](docs/live_data_deployment.md)
 - [MongoDB Atlas guide](docs/mongodb_atlas_guide.md)
 - [Power BI guide](docs/power_bi_guide.md)
-- [GitHub showcase guide](docs/github_showcase.md)
-- [Beacons portfolio showcase](docs/beacons_showcase.md)
-- [Project plan](docs/project_plan.md)
+- [Azure App Service option](docs/azure_app_service_deployment.md)
+- [Portfolio showcase copy](docs/beacons_showcase.md)
+- [Project completion record](docs/project_plan.md)
+
+## Author
+
+**Urvil Godhani**
+
+Data analytics and data science portfolio project

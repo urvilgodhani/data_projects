@@ -3,6 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Interactive market cockpit for synthetic retail digital fulfillment operations.">
+    <meta name="theme-color" content="#080d13">
+    <meta name="robots" content="index,follow">
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
     <title>Digital Fulfillment Command Center</title>
     <style>
       :root {
@@ -1086,13 +1090,37 @@
       }
 
       @media (max-width: 760px) {
+        header {
+          height: auto;
+          padding: 10px 16px;
+          position: static;
+        }
+
+        .header-row {
+          align-items: stretch;
+          gap: 10px;
+          height: auto;
+        }
+
+        .brand {
+          min-width: 0;
+        }
+
+        .brand h1 {
+          font-size: 15px;
+        }
+
+        .back {
+          align-self: stretch;
+        }
+
         .app-sidebar {
           display: none;
         }
 
         .app {
-          margin: 18px auto 36px;
-          width: min(100% - 32px, 720px);
+          margin: 16px;
+          width: auto;
         }
 
         .header-row,
@@ -1101,6 +1129,21 @@
         .selector {
           align-items: stretch;
           flex-direction: column;
+        }
+
+        .selector input,
+        .selector select {
+          min-width: 0;
+          width: 100%;
+        }
+
+        .live-strip {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .live-meta {
+          text-align: left;
         }
 
         table {
@@ -1112,6 +1155,16 @@
           grid-template-columns: 1fr;
         }
 
+      }
+
+      @media (max-width: 520px) {
+        .store-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .store-button {
+          min-width: 0;
+        }
       }
     </style>
   </head>
@@ -1357,6 +1410,8 @@
       }
 
       function showPage(name) {
+        const validPages = ["home", "picking", "staging", "dispensing", "returns", "store"];
+        if (!validPages.includes(name)) name = "home";
         document.querySelectorAll(".page").forEach((page) => page.classList.remove("active"));
         document.getElementById(`${name}-page`).classList.add("active");
         document.getElementById("back-home").style.display = name === "home" ? "none" : "inline-block";
@@ -2038,6 +2093,8 @@
         renderHome();
         ["picking", "staging", "dispensing", "returns"].forEach(renderStagePage);
         renderStorePage();
+        const requestedView = new URLSearchParams(window.location.search).get("view");
+        if (requestedView) showPage(requestedView);
         try {
           const connected = await refreshFromLiveApi();
           if (!connected) mutateDemoSummary();
